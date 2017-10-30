@@ -10,7 +10,7 @@ Button partyButton;
 
 
 void setup() {
-  size(800, 500);
+  size(800, 512); // gotta show 512 x 512 for 
   smooth();
   textSize(16);
 

@@ -2,15 +2,36 @@
 
 class QuadTree {
 
-  Point[] points;
   private int height;
   java.util.List<LineSegment> lineSegments;
+  private Node root;
 
   QuadTree(String filename) {
     setLineSegments(parseFile(filename));
-    for (LineSegment ls : lineSegments) {
-      System.out.println(ls);
-    }
+  }
+
+  public Node getRoot() {
+    return root;
+  }
+
+  public void setRoot(Node root) {
+    this.root = root;
+  }
+
+  public int getHeight() {
+    return height;
+  }
+
+  public void setHeight(int height) {
+    this.height = height;
+  }
+
+  public java.util.List getLineSegments() {
+    return lineSegments;
+  }
+
+  public void setLineSegments(java.util.List lineSegments) {
+    this.lineSegments = lineSegments;
   }
 
   java.util.List<LineSegment> parseFile(String filename) {
@@ -39,22 +60,6 @@ class QuadTree {
     }
 
     return lineSegs;
-  }
-
-  public int getHeight() {
-    return height;
-  }
-
-  public void setHeight(int height) {
-    this.height = height;
-  }
-
-  public java.util.List getLineSegments() {
-    return lineSegments;
-  }
-
-  public void setLineSegments(java.util.List lineSegments) {
-    this.lineSegments = lineSegments;
   }
 
 }

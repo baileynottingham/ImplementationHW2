@@ -49,9 +49,10 @@ class QuadTree {
         if (ints.length != 3){
           throw new Exception("Excpeted 3 integers.");
         }
-        lineSegs.add(new LineSegment(Integer.parseInt(ints[0]),
-                                     Integer.parseInt(ints[1]),
-                                     Integer.parseInt(ints[2])));
+        int x1 = Integer.parseInt(ints[0]);
+        int x2 = Integer.parseInt(ints[1]);
+        int y = Integer.parseInt(ints[2]);
+        lineSegs.add(new LineSegment(x1, x2, y));
       }
       reader.close();
     }

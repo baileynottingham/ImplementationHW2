@@ -16,12 +16,16 @@ public class Node {
     return children;
   }
 
-  public java.util.List<LineSegment> getSegments() {
+  public java.util.List<LineSegment> getLineSegments() {
     return lineSegments;
   }
 
   public Rectangle getRegion() {
     return region;
+  }
+
+  public void setRegion(Rectangle region) {
+    this.region = region;
   }
 
 }

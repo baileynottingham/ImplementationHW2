@@ -14,4 +14,8 @@ class Rectangle {
     this.ymax = ymax;
   }
 
+  public boolean isDisjoint(LineSegment lineSegment) {
+    return false;
+  }
+
 }

@@ -8,6 +8,29 @@ class QuadTree {
 
   QuadTree(String filename) {
     setLineSegments(parseFile(filename));
+    root = new Node();
+    int numPixels = (int) java.lang.Math.pow(2, getHeight()); // 2^h is the number of 'cells' in our image.
+    root.setRegion(new Rectangle(0, numPixels, 0, numPixels));
+  }
+
+  public void insert(LineSegment lineSegment, Node v) throws Exception {
+    if (v == null) {
+      throw new NullPointerException("v shouldn't be null.");
+    }
+    if (v.getRegion().isDisjoint(lineSegment)) {
+    }
+  }
+
+  public void split(Node v) {
+    for (Node child : v.getChildren()) {
+      for (LineSegment ls : child.getLineSegments()){
+        try {
+          insert(ls, child);
+        } catch (Exception e) {
+          System.err.println(e);
+        }
+      }
+    }
   }
 
   public Node getRoot() {

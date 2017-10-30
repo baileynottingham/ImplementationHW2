@@ -1,12 +1,22 @@
 
 
 public class Node {
-  private java.util.List<Node> children;
-  private Rectangle region;
-  private java.util.List<LineSegment> lineSegments;
+  private java.util.List<Node> children = new ArrayList<Node>();
+  private Rectangle region = null;
+  private java.util.List<LineSegment> lineSegments = new ArrayList<LineSegment>();
   public Node() {
-    children = new ArrayList<Node>();
-    lineSegments = new ArrayList<LineSegment>();
+  }
+
+  public java.util.List<Node> getChildren() {
+    return children;
+  }
+
+  public java.util.List<LineSegment> getSegments() {
+    return lineSegments;
+  }
+
+  public Rectangle getRegion() {
+    return region;
   }
 
 }

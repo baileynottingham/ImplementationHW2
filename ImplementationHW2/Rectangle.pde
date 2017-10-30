@@ -12,4 +12,6 @@ class Rectangle {
     this.xmax = xmax;
     this.ymin = ymin;
     this.ymax = ymax;
+  }
+
 }

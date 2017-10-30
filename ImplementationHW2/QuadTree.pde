@@ -3,24 +3,58 @@
 class QuadTree {
 
   Point[] points;
+  private int height;
+  java.util.List<LineSegment> lineSegments;
 
   QuadTree(String filename) {
-    parseAndBuildQuadTree(filename);
+    setLineSegments(parseFile(filename));
+    for (LineSegment ls : lineSegments) {
+      System.out.println(ls);
+    }
   }
 
-  void parseAndBuildQuadTree( String filename ) {
+  java.util.List<LineSegment> parseFile(String filename) {
     BufferedReader reader;
-    reader = createReader( filename );
+    String line = null;
+    reader = createReader(filename);
+    java.util.List<LineSegment> lineSegs = new ArrayList<LineSegment>();
+
     try {
-      points = new Point[ Integer.parseInt( reader.readLine() ) ];
-      for (int i = 0; i < points.length; i++) {
-        String[] ints = reader.readLine().split(",");
-        println(ints[0] + " " + ints[1] + " " + ints[2]);
+      setHeight(Integer.parseInt(reader.readLine()));
+      // Since we don't know how many points we will have,
+      // we just check if line is not null. Kinda like in C.
+      while ((line = reader.readLine()) != null) {
+        String[] ints = line.split(",");
+        if (ints.length != 3){
+          throw new Exception("Excpeted 3 integers.");
+        }
+        lineSegs.add(new LineSegment(Integer.parseInt(ints[0]),
+                                     Integer.parseInt(ints[1]),
+                                     Integer.parseInt(ints[2])));
       }
       reader.close();
     }
-    catch ( Exception e) {
-      System.err.println( "Error occured when parsing " + filename + ". Error msg: " + e.getMessage() );
+    catch (Exception e) {
+      System.err.println("Error occured when parsing " + filename + ". Error msg: " + e.getMessage());
     }
+
+    return lineSegs;
   }
+
+  public int getHeight() {
+    return height;
+  }
+
+  public void setHeight(int height) {
+    this.height = height;
+  }
+
+  public java.util.List getLineSegments() {
+    return lineSegments;
+  }
+
+  public void setLineSegments(java.util.List lineSegments) {
+    this.lineSegments = lineSegments;
+  }
+
 }

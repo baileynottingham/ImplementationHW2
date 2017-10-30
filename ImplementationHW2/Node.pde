@@ -1,5 +1,6 @@
 /**
- * @description pointer to children, and maintains the region, and maintains line segments.
+ * @description pointer to children, and maintains the region, and maintains
+ * line segments.
  * @author Bailey Nottingham
  * @author Mario Hernandez
  */

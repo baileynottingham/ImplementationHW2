@@ -1,9 +1,14 @@
-
-
+/**
+ * @description pointer to children, and maintains the region, and maintains line segments.
+ * @author Bailey Nottingham
+ * @author Mario Hernandez
+ */
 public class Node {
+
   private java.util.List<Node> children = new ArrayList<Node>();
   private Rectangle region = null;
   private java.util.List<LineSegment> lineSegments = new ArrayList<LineSegment>();
+
   public Node() {
   }
 

@@ -1,17 +1,32 @@
 
-
 class Rectangle {
    
-  int xmin;
-  int xmax;
-  int ymin;
-  int ymax;
+  private int xmin;
+  private int xmax;
+  private int ymin;
+  private int ymax;
   
   Rectangle(int xmin, int xmax, int ymin, int ymax) {
     this.xmin = xmin;
     this.xmax = xmax;
     this.ymin = ymin;
     this.ymax = ymax;
+  }
+
+  public int getXMin() {
+    return xmin;
+  }
+
+  public int getXMax() {
+    return xmax;
+  }
+
+  public int getYMin() {
+    return ymin;
+  }
+
+  public int getYMax() {
+    return ymax;
   }
 
   /**

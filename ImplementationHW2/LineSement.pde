@@ -1,5 +1,4 @@
 
-
 class LineSegment {
   private Point leftPoint;
   private Point rightPoint;

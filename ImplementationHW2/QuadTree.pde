@@ -30,6 +30,10 @@ class QuadTree {
   }
 
   public void split(Node v) {
+    for (int i = 0; i < 4; ++i) {
+      // TODO: Let the children know what area they cover.
+      v.getChildren().add(new Node());
+    }
     for (Node child : v.getChildren()) {
       for (LineSegment ls : child.getLineSegments()){
         insert(ls, child);

@@ -35,8 +35,8 @@ class Rectangle {
   public boolean isDisjoint(LineSegment lineSegment) {
     boolean isAboveTheBottom = lineSegment.getHeight() >= xmin;
     boolean isBelowTheTop = lineSegment.getHeight() <= xmax;
-    boolean isToTheRightOfTheLeft = (int) lineSegment.getLeftPoint().getX() >= ymin;
-    boolean isToTheLeftOfTheRight = (int) lineSegment.getRightPoint().getX() <= ymax;
-    return !isAboveTheBottom || !isBelowTheTop || !isToTheRightOfTheLeft || !isToTheLeftOfTheRight;
+    boolean isWithinLeftBound = (int) lineSegment.getLeftPoint().getX() >= ymin;
+    boolean isWithinRightBound = (int) lineSegment.getRightPoint().getX() <= ymax;
+    return !isAboveTheBottom || !isBelowTheTop || !isWithinLeftBound || !isWithinRightBound;
   }
 }

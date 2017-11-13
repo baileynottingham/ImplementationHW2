@@ -60,9 +60,9 @@ class QuadTree {
     v.getChildren().add(southWestNode);
     v.getChildren().add(southEastNode);
 
-    for (Node child : v.getChildren()) {
-      for (LineSegment ls : child.getLineSegments()){
-        insert(ls, child);
+    for (Node u : v.getChildren) {
+      for (LineSegment lineSegment : v.getLineSegments()) {
+        insert(lineSegment, u);
       }
     }
   }

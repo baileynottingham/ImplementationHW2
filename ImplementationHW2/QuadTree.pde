@@ -91,10 +91,10 @@ class QuadTree {
       for (Node u : node.getChildre()) {
         traverseHelper(u);
       }
-    } else {
-      for (LineSegment lineSegment : node.getLineSegments()) {
-        println(lineSegment);
-      }
     }
+    for (LineSegment lineSegment : node.getLineSegments()) {
+      println(lineSegment);
+    }
+    return;
   }
 }

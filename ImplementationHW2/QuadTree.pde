@@ -82,4 +82,19 @@ class QuadTree {
   public void setHeight(int height) {
     this.height = height;
   }
+
+  public void traverseTree() {
+    traverseHelper(root);
+  }
+  public void traverseHelper(Node node) {
+    if (!node.isLeaf()) {
+      for (Node u : node.getChildre()) {
+        traverseHelper(u);
+      }
+    } else {
+      for (LineSegment lineSegment : node.getLineSegments()) {
+        println(lineSegment);
+      }
+    }
+  }
 }

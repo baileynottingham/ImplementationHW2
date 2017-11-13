@@ -1,36 +1,38 @@
 
-
 class QuadTree {
 
-  private int height;
-  java.util.List<LineSegment> lineSegments;
-  private Node root;
+  private int height = 0;
+  private Node root = new Node();
 
-  QuadTree(String filename) {
-    setLineSegments(parseFile(filename));
-    root = new Node();
-    // 2^h is the number of 'cells' in our image.
+  QuadTree() {
+    root.setRegion(new Rectangle(0, 512, 0, 512));
     int numPixels = (int) java.lang.Math.pow(2, getHeight());
     root.setRegion(new Rectangle(0, numPixels, 0, numPixels));
   }
 
-  public void insert(LineSegment lineSegment, Node v) throws Exception {
+  public void insert(LineSegment lineSegment, Node v) {
     if (v == null) {
-      throw new NullPointerException("v shouldn't be null.");
+      System.err.println("QuadTree[ insert ] v is null. This shouldn't happen.");
+      return;
     }
     if (v.getRegion().isDisjoint(lineSegment)) {
       return;
+    } else if (!v.isLeaf()) {
+      for (Node u : v.getChildren()) {
+        insert(lineSegment, u);
+      }
+    } else {
+      v.addLineSegment(lineSegment);
+      if (v.shouldSplit()) {
+        split(v);
+      }
     }
   }
 
   public void split(Node v) {
     for (Node child : v.getChildren()) {
       for (LineSegment ls : child.getLineSegments()){
-        try {
-          insert(ls, child);
-        } catch (Exception e) {
-          System.err.println(e);
-        }
+        insert(ls, child);
       }
     }
   }
@@ -50,42 +52,4 @@ class QuadTree {
   public void setHeight(int height) {
     this.height = height;
   }
-
-  public java.util.List getLineSegments() {
-    return lineSegments;
-  }
-
-  public void setLineSegments(java.util.List lineSegments) {
-    this.lineSegments = lineSegments;
-  }
-
-  java.util.List<LineSegment> parseFile(String filename) {
-    BufferedReader reader;
-    String line = null;
-    reader = createReader(filename);
-    java.util.List<LineSegment> lineSegs = new ArrayList<LineSegment>();
-
-    try {
-      setHeight(Integer.parseInt(reader.readLine()));
-      // Since we don't know how many points we will have,
-      // we just check if line is not null. Kinda like in C.
-      while ((line = reader.readLine()) != null) {
-        String[] ints = line.split(",");
-        if (ints.length != 3){
-          throw new Exception("Excpeted 3 integers.");
-        }
-        int x1 = Integer.parseInt(ints[0]);
-        int x2 = Integer.parseInt(ints[1]);
-        int y = Integer.parseInt(ints[2]);
-        lineSegs.add(new LineSegment(x1, x2, y));
-      }
-      reader.close();
-    }
-    catch (Exception e) {
-      System.err.println("Error occured when parsing " + filename + ". Error msg: " + e.getMessage());
-    }
-
-    return lineSegs;
-  }
-
 }

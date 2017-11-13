@@ -14,8 +14,14 @@ class Rectangle {
     this.ymax = ymax;
   }
 
+  /**
+   * Checks that the line doesn't lay on this region.
+   */
   public boolean isDisjoint(LineSegment lineSegment) {
-    return false;
+    boolean isAboveTheBottom = lineSegment.getHeight() >= xmin;
+    boolean isBelowTheTop = lineSegment.getHeight() <= xmax;
+    boolean isToTheRightOfTheLeft = (int) lineSegment.getLeftPoint().getX() >= ymin;
+    boolean isToTheLeftOfTheRight = (int) lineSegment.getRightPoint().getX() <= ymax;
+    return !isAboveTheBottom || !isBelowTheTop || !isToTheRightOfTheLeft || !isToTheLeftOfTheRight;
   }
-
 }

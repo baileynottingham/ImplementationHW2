@@ -6,11 +6,12 @@ Button insertButton;
 Button animationButton;
 Button reportButton;
 Button partyButton;
-
+QuadTree quadTree = null;
+java.util.List<LineSegment> lineSegments = null;
 
 
 void setup() {
-  size(800, 512); // gotta show 512 x 512 for 
+  size(800, 512);
   smooth();
   textSize(16);
 
@@ -91,7 +92,36 @@ void mousePressed() {
 } //END mousePressed
 
 void processFile(String fileName) {
-  QuadTree tree = new QuadTree(fileName);
+  quadTree = new QuadTree();
+  lineSegments = parseFile(fileName);
+  println("number of line segments: "+lineSegments.size());
+}
+
+java.util.List<LineSegment> parseFile(String filename) {
+  BufferedReader reader;
+  String line = null;
+  reader = createReader(filename);
+  java.util.List<LineSegment> lines = new ArrayList<LineSegment>();
+  try {
+    quadTree.setHeight(Integer.parseInt(reader.readLine()));
+    // Since we don't know how many points we will have,
+    // we just check if line is not null. Kinda like in C.
+    while ((line = reader.readLine()) != null) {
+      String[] ints = line.split(",");
+      if (ints.length != 3) {
+        throw new Exception("Excpeted 3 integers.");
+      }
+      int x1 = Integer.parseInt(ints[0]);
+      int x2 = Integer.parseInt(ints[1]);
+      int y = Integer.parseInt(ints[2]);
+      lines.add(new LineSegment(x1, x2, y));
+      }
+      reader.close();
+    }
+    catch (Exception e) {
+      System.err.println("Error occured when parsing " + filename + ". Error msg: " + e.getMessage());
+    }
+    return lines;
 }
 
 
@@ -101,7 +131,6 @@ void processFile(String fileName) {
  * Description: Draws all program buttons (defined as global variables)
  *******************************************************************************/
 void drawButtons() {
-  
   readFileButton.setText("Read File");
   restartButton.drawButton();
   readFileButton.drawButton();

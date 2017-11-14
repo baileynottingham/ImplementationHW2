@@ -1,6 +1,6 @@
 enum SplitRegion {
     NORTH_WEST,
-    NORT_EAST,
+    NORTH_EAST,
     SOUTH_WEST,
     SOUTH_EAST
 }

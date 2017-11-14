@@ -45,13 +45,13 @@ class QuadTree {
     int xShift = xmin;
     int yShift = ymin;
 
-    Rectangle northWestRegion = new Rectangle(xShift, xShift + width / 2, yshift, yshift + height / 2);
+    Rectangle northWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
     yShift = ymin + ((ymax/2) - ymin);
     Rectangle southWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
     xShift = xmin + ((xmax/2) - xmin);
-    Rectangle northEastRegion = new Rectangle(xShift, xShift + width / 2, yshift, yShift + height / 2);
+    Rectangle northEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
     yShift = ymin + ((ymax/2) - ymin);
-    Rectangle southEastRegion = new Rectangle(xShift, xShift + width / 2, yshift, yShift + height / 2);
+    Rectangle southEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
 
     v.getChildren().add(new Node(northWestRegion, SplitRegion.NORTH_WEST));
     v.getChildren().add(new Node(northEastRegion, SplitRegion.NORTH_EAST));

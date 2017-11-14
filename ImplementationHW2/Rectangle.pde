@@ -54,6 +54,6 @@ class Rectangle {
 
   @Override
   public String toString() {
-    return "xmin: " + xmin + "\txmax" + xmax + "\t" + "ymin:" + ymin + "\tymax" + ymax;
+    return "xmin: " + xmin + "\txmax:" + xmax + "\t" + "ymin:" + ymin + "\tymax:" + ymax;
   }
 }

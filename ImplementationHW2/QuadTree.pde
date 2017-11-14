@@ -95,8 +95,7 @@ class QuadTree {
         traverseHelper(u);
       }
     } else {
-      println("Region: " + node.getSplitRegion() + "\t" + node.getRegion());
-      println("Number of line segments: " + node.getLineSegments().size());
+      println("[ Region: " + node.getSplitRegion() + ".\t" + node.getRegion() + ".\t" + "Number of line segments: " + node.getLineSegments().size() + " ]");
       for (LineSegment lineSegment : node.getLineSegments()) {
         println(lineSegment);
       }

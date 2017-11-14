@@ -5,12 +5,15 @@ class Rectangle {
   private int xmax;
   private int ymin;
   private int ymax;
-  
+  private int width;
+  private int height;
+
   Rectangle(int xmin, int xmax, int ymin, int ymax) {
     this.xmin = xmin;
     this.xmax = xmax;
     this.ymin = ymin;
     this.ymax = ymax;
+    // calculate width and height.
   }
 
   public int getXMin() {
@@ -27,6 +30,14 @@ class Rectangle {
 
   public int getYMax() {
     return ymax;
+  }
+
+  public int getHeight() {
+    return height;
+  }
+
+  public int getWidth() {
+    return width;
   }
 
   /**

@@ -94,7 +94,7 @@ void mousePressed() {
 void processFile(String fileName) {
   quadTree = new QuadTree();
   lineSegments = parseFile(fileName);
-  println("number of line segments: "+lineSegments.size());
+  println("Number of line segments: "+ lineSegments.size());
 }
 
 java.util.List<LineSegment> parseFile(String filename) {

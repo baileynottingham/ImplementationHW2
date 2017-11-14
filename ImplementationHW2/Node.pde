@@ -16,9 +16,9 @@ public class Node {
     lineSegments = new ArrayList<LineSegment>();
   }
 
-  public Node(int xmin, int ymin, int xmax, int ymax) {
+  public Node(Rectangle region) {
     this();
-    region = new Rectangle(xmin, xmax, ymin, ymax);
+    this.region = region;
   }
 
   public java.util.List<Node> getChildren() {

@@ -8,7 +8,7 @@ class QuadTree {
 
   private int height = 0;
   private Node root = new Node();
-
+  // width & height
   QuadTree() {
     root.setRegion(new Rectangle(0, 512, 0, 512));
     int numPixels = (int) java.lang.Math.pow(2, getHeight());
@@ -35,26 +35,21 @@ class QuadTree {
   }
 
   public void split(Node v) {
-    /* xmin                   xmax
-     * ymin    
-     *          
-     *          ____________
-     *         |      |     |
-     *         |  NW  |  NE |
-     *         |______|_____|
-     *         |      |     |
-     *         |  SW  | SE  |
-     *          ____________
-     * ymax
-     */
     int xmin = v.getRegion().getXMin();
     int xmax = v.getRegion().getXMax();
     int ymin = v.getRegion().getYMin();
     int ymax = v.getRegion().getYMax();
-    Node northWestNode = new Node(xmin, ymin, xmax/2, ymax/2);
-    Node northEastNode = new Node(xmax/2, ymin, xmax, ymax/2);
-    Node southWestNode = new Node(xmin, ymax/2, xmax/2, ymax);
-    Node southEastNode = new Node(xmax/2, ymax/2, xmax, ymax);
+
+    Rectangle northWestRegion = new Rectangle(xmin, xmax/2, ymin, ymax/2);
+    Rectangle northEastRegion = new Rectangle(xmax/2, xmax, ymin, ymax/2);
+    Rectangle southWestRegion = new Rectangle(xmin, xmax/2, ymax/2, ymax);
+    Rectangle southEastRegion = new Rectangle(xmax/2, xmax, ymax/2, ymax);
+
+    Node northWestNode = new Node(northWestRegion);
+    Node northEastNode = new Node(northEastRegion);
+    Node southWestNode = new Node(southWestRegion);
+    Node southEastNode = new Node(southEastRegion);
+
     v.getChildren().add(northWestNode);
     v.getChildren().add(northEastNode);
     v.getChildren().add(southWestNode);

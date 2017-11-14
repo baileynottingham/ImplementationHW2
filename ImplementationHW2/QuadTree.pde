@@ -9,10 +9,14 @@ class QuadTree {
   private int height = 0;
   private Node root = new Node();
 
-  QuadTree() {
+  QuadTree(int height) {
+    this.height = height;
     root.setRegion(new Rectangle(0, 512, 0, 512));
-    int numPixels = (int) java.lang.Math.pow(2, getHeight());
+    int numPixels = (int) java.lang.Math.pow(2, height);
     root.setRegion(new Rectangle(0, numPixels, 0, numPixels));
+    root.setSplitRegion(SplitRegion.WHOLE_GRAPH);
+    // Regardless of the data, the QuadTree always has four leaf nodes to begin with.
+    split(root);
   }
 
   public void insert(LineSegment lineSegment, Node v) {
@@ -90,9 +94,12 @@ class QuadTree {
       for (Node u : node.getChildren()) {
         traverseHelper(u);
       }
-    }
-    for (LineSegment lineSegment : node.getLineSegments()) {
-      println(lineSegment);
+    } else {
+      println("Region: " + node.getSplitRegion() + "\t" + node.getRegion());
+      println("Number of line segments: " + node.getLineSegments().size());
+      for (LineSegment lineSegment : node.getLineSegments()) {
+        println(lineSegment);
+      }
     }
     return;
   }

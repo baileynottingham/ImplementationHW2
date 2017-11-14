@@ -51,4 +51,9 @@ class Rectangle {
     boolean isWithinRightBound = (int) lineSegment.getRightPoint().getX() <= ymax;
     return !isAboveTheBottom || !isBelowTheTop || !isWithinLeftBound || !isWithinRightBound;
   }
+
+  @Override
+  public String toString() {
+    return "xmin: " + xmin + "\txmax" + xmax + "\t" + "ymin:" + ymin + "\tymax" + ymax;
+  }
 }

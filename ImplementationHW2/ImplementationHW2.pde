@@ -83,27 +83,40 @@ void mousePressed() {
   }
   // user presses "Next"
   else if (insertButton.mouseOver()) {
-    
     javax.swing.JOptionPane.showMessageDialog(null, "Next Button Pressed ");
-    
-  
-    
-    }
+  }
 } //END mousePressed
 
 void processFile(String fileName) {
-  quadTree = new QuadTree();
-  lineSegments = parseFile(fileName);
+  int height = parseFileForHeight(fileName);
+  quadTree = new QuadTree(height);
+  quadTree.traverseTree();
+  lineSegments = parseFileForLineSegments(fileName);
   println("Number of line segments: "+ lineSegments.size());
+  for (LineSegment lineSegment : lineSegments) {
+    println(lineSegment);
+  }
 }
 
-java.util.List<LineSegment> parseFile(String filename) {
+int parseFileForHeight(String filename) {
+  BufferedReader reader = createReader(filename);
+  try {
+    int height = Integer.parseInt(reader.readLine());
+    reader.close();
+    return height;  
+  } catch (Exception e) {
+  }
+  return -1;
+}
+
+java.util.List<LineSegment> parseFileForLineSegments(String filename) {
   BufferedReader reader;
   String line = null;
   reader = createReader(filename);
   java.util.List<LineSegment> lines = new ArrayList<LineSegment>();
   try {
-    quadTree.setHeight(Integer.parseInt(reader.readLine()));
+    // read the first line, but dont do anything with it.
+    Integer.parseInt(reader.readLine());
     // Since we don't know how many points we will have,
     // we just check if line is not null. Kinda like in C.
     while ((line = reader.readLine()) != null) {
@@ -123,7 +136,6 @@ java.util.List<LineSegment> parseFile(String filename) {
     }
     return lines;
 }
-
 
 /*******************************************************************************
  * drawButtons()

@@ -39,6 +39,7 @@ class QuadTree {
   }
 
   public void split(Node v) {
+    java.util.List<Node> children = v.getChildren();
     int xmin = v.getRegion().getXMin();
     int xmax = v.getRegion().getXMax();
     int ymin = v.getRegion().getYMin();
@@ -53,14 +54,15 @@ class QuadTree {
     yShift = ymin + ((ymax/2) - ymin);
     Rectangle southWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
     xShift = xmin + ((xmax/2) - xmin);
+    yShift = ymin;
     Rectangle northEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
     yShift = ymin + ((ymax/2) - ymin);
     Rectangle southEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
 
-    v.getChildren().add(new Node(northWestRegion, SplitRegion.NORTH_WEST));
-    v.getChildren().add(new Node(northEastRegion, SplitRegion.NORTH_EAST));
-    v.getChildren().add(new Node(southWestRegion, SplitRegion.SOUTH_WEST));
-    v.getChildren().add(new Node(southEastRegion, SplitRegion.SOUTH_EAST));
+    children.add(new Node(northWestRegion, SplitRegion.NORTH_WEST));
+    children.add(new Node(northEastRegion, SplitRegion.NORTH_EAST));
+    children.add(new Node(southWestRegion, SplitRegion.SOUTH_WEST));
+    children.add(new Node(southEastRegion, SplitRegion.SOUTH_EAST));
 
     for (Node u : v.getChildren()) {
       for (LineSegment lineSegment : v.getLineSegments()) {

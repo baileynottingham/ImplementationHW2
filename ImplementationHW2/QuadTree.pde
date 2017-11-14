@@ -8,7 +8,7 @@ class QuadTree {
 
   private int height = 0;
   private Node root = new Node();
-  // width & height
+
   QuadTree() {
     root.setRegion(new Rectangle(0, 512, 0, 512));
     int numPixels = (int) java.lang.Math.pow(2, getHeight());
@@ -40,20 +40,23 @@ class QuadTree {
     int ymin = v.getRegion().getYMin();
     int ymax = v.getRegion().getYMax();
 
-    Rectangle northWestRegion = new Rectangle(xmin, xmax/2, ymin, ymax/2);
-    Rectangle northEastRegion = new Rectangle(xmax/2, xmax, ymin, ymax/2);
-    Rectangle southWestRegion = new Rectangle(xmin, xmax/2, ymax/2, ymax);
-    Rectangle southEastRegion = new Rectangle(xmax/2, xmax, ymax/2, ymax);
+    int width = xmax - xmin;
+    int height = ymax - ymin;
+    int xShift = xmin;
+    int yShift = ymin;
 
-    Node northWestNode = new Node(northWestRegion);
-    Node northEastNode = new Node(northEastRegion);
-    Node southWestNode = new Node(southWestRegion);
-    Node southEastNode = new Node(southEastRegion);
+    Rectangle northWestRegion = new Rectangle(xShift, xShift + width / 2, yshift, yshift + height / 2);
+    yShift = ymin + ((ymax/2) - ymin);
+    Rectangle southWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
+    xShift = xmin + ((xmax/2) - xmin);
+    Rectangle northEastRegion = new Rectangle(xShift, xShift + width / 2, yshift, yShift + height / 2);
+    yShift = ymin + ((ymax/2) - ymin);
+    Rectangle southEastRegion = new Rectangle(xShift, xShift + width / 2, yshift, yShift + height / 2);
 
-    v.getChildren().add(northWestNode);
-    v.getChildren().add(northEastNode);
-    v.getChildren().add(southWestNode);
-    v.getChildren().add(southEastNode);
+    v.getChildren().add(new Node(northWestRegion, SplitRegion.NORTH_WEST));
+    v.getChildren().add(new Node(northEastRegion, SplitRegion.NORTH_EAST));
+    v.getChildren().add(new Node(southWestRegion, SplitRegion.SOUTH_WEST));
+    v.getChildren().add(new Node(southEastRegion, SplitRegion.SOUTH_EAST));
 
     for (Node u : v.getChildren) {
       for (LineSegment lineSegment : v.getLineSegments()) {

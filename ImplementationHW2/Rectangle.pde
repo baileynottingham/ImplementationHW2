@@ -13,7 +13,8 @@ class Rectangle {
     this.xmax = xmax;
     this.ymin = ymin;
     this.ymax = ymax;
-    // calculate width and height.
+    this.width = xmax - xmin;
+    this.height = ymax - ymin;
   }
 
   public int getXMin() {

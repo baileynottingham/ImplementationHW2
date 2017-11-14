@@ -93,9 +93,14 @@ void processFile(String fileName) {
   quadTree.traverseTree();
   lineSegments = parseFileForLineSegments(fileName);
   println("Number of line segments: "+ lineSegments.size());
+  int i = 0;
   for (LineSegment lineSegment : lineSegments) {
-    println(lineSegment);
+    if ( i < 4) {
+      quadTree.insert(lineSegment);
+    }
+    i++;
   }
+  quadTree.traverseTree();
 }
 
 int parseFileForHeight(String filename) {

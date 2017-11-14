@@ -2,12 +2,12 @@
 class LineSegment {
   private Point leftPoint;
   private Point rightPoint;
-  private int height;
+  private int verticalShift;
   
   LineSegment(int x1, int x2, int y) {
     leftPoint = new Point(Math.min(x1, x2), y);
     rightPoint = new Point(Math.max(x1, x2), y);
-    height = y;
+    verticalShift = y;
   }
 
   public Point getLeftPoint() {
@@ -17,8 +17,8 @@ class LineSegment {
   public Point getRightPoint() {
     return rightPoint;
   }
-  public int getHeight() {
-    return height;
+  public int getVerticalShift() {
+    return verticalShift;
   }
 
   @Override

@@ -58,7 +58,7 @@ class QuadTree {
     v.getChildren().add(new Node(southWestRegion, SplitRegion.SOUTH_WEST));
     v.getChildren().add(new Node(southEastRegion, SplitRegion.SOUTH_EAST));
 
-    for (Node u : v.getChildren) {
+    for (Node u : v.getChildren()) {
       for (LineSegment lineSegment : v.getLineSegments()) {
         insert(lineSegment, u);
       }

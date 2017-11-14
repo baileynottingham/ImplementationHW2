@@ -45,16 +45,13 @@ class Rectangle {
    * Checks that the line doesn't lay on this region.
    */
   public boolean isDisjoint(LineSegment lineSegment) {
-    boolean isAboveTheBottom = lineSegment.getVerticalShift() >= ymin;
-    boolean isBelowTheTop = lineSegment.getVerticalShift() <= ymax;
-    boolean isWithinLeftBound = (int)lineSegment.getLeftPoint().getX() >= xmin;
-    boolean isWithinRightBound = (int)lineSegment.getRightPoint().getX() <= xmax;
-    // boolean leftHanging = isWithinRightBound && isAboveTheBottom && isBelowTheTop;
-    // boolean righHanging = isWithinLeftBound && isAboveTheBottom && isBelowTheTop;
-    // boolean fullyInRegion = isWithinLeftBound && isWithinRightBound && isAboveTheBottom && isBelowTheTop;
-    // so line would be in the region if it is left hanging or right hanging or fully enclosed...
-    // so negate that statement.
-    return !isAboveTheBottom || !isBelowTheTop || !isWithinLeftBound || !isWithinRightBound;
+    java.awt.Rectangle rect = new java.awt.Rectangle(xmin, ymin, width, height);
+    java.awt.geom.Line2D line = new java.awt.geom.Line2D.Double(
+                                                                (double)lineSegment.getLeftPoint().getX(),
+                                                                (double)lineSegment.getVerticalShift(),
+                                                                (double)lineSegment.getRightPoint().getX(),
+                                                                (double)lineSegment.getVerticalShift());
+    return !line.intersects(rect);
   }
 
   @Override

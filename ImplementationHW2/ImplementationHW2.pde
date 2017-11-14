@@ -93,12 +93,9 @@ void processFile(String fileName) {
   quadTree.traverseTree();
   lineSegments = parseFileForLineSegments(fileName);
   println("Number of line segments: "+ lineSegments.size());
-  int i = 0;
+
   for (LineSegment lineSegment : lineSegments) {
-    if ( i < 4) {
-      quadTree.insert(lineSegment);
-    }
-    i++;
+    quadTree.insert(lineSegment);
   }
   quadTree.traverseTree();
 }

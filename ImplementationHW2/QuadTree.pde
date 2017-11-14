@@ -6,7 +6,6 @@
  */
 class QuadTree {
 
-  int i = 0;
   private int height = 0;
   private Node root = new Node();
 
@@ -30,29 +29,20 @@ class QuadTree {
       return;
     }
     if (v.getRegion().isDisjoint(lineSegment)) {
-      if ( i >= 2) {
-        println("Line segment is disjoint from node.");
-        println("region: "+v.getRegion() + ".\tlineSegment: " + lineSegment );
-      }      
       return;
     } else if (!v.isLeaf()) {
       for (Node u : v.getChildren()) {
         insert(lineSegment, u);
       }
     } else {
-      println("QuadTree[ insert ]: v is a leaf, let us insert.");
       v.addLineSegment(lineSegment);
       if (v.shouldSplit()) {
         split(v);
-      } //<>//
+      }
     }
   }
 
-  public void split(Node v) { //<>//
-    System.err.println("QuadTree[ split ]: splitting: " + v.getRegion()+" " + v.getSplitRegion());
-    if (i++ == 2) {
-      println();
-    }
+  public void split(Node v) {
     java.util.List<Node> children = v.getChildren();
     int xmin = v.getRegion().getXMin();
     int xmax = v.getRegion().getXMax();
@@ -112,7 +102,6 @@ class QuadTree {
       }
     } else {
       print("[ Region: " + node.getSplitRegion() + ".\t" + node.getRegion()+"\t");
-      //  + ".\t" + "Number of line segments: " + node.getLineSegments().size() + " ]"
       print("line segments: ");
       for (LineSegment lineSegment : node.getLineSegments()) {
         print(lineSegment + ", ");

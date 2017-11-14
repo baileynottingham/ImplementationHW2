@@ -87,7 +87,7 @@ class QuadTree {
 
   public void traverseHelper(Node node) {
     if (!node.isLeaf()) {
-      for (Node u : node.getChildre()) {
+      for (Node u : node.getChildren()) {
         traverseHelper(u);
       }
     }

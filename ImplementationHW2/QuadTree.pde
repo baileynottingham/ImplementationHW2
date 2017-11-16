@@ -75,6 +75,50 @@ class QuadTree {
     }
   }
 
+  public void report(Rectangle queryDisk) {
+    resetAllLineSegments(root);
+    report(queryDisk, root);
+  }
+
+  /**
+   * Will not return a list, will only modify the LineSegment objects that are contained in the QueryDisk.
+   * So in the draw method you will only have to go through the lineSegments list and it will have the width, and
+   * color modified.
+   */
+  public void report(Rectangle queryDisk, Node v) {
+    // 1.If v is NULL – return.
+    if (v == null) {
+      return;
+    }
+
+    // 2.If R(v) is disjoint from Q – return
+    if (v.getRegion().isDisjoint(queryDisk)) {
+      return;
+    }
+
+    // 3.If R(v) is fully contained in Q –
+    // report all points in the subtree
+    // rooted at v.
+    if (v.getRegion().isFullyContained(queryDisk)) {
+      changeLineSegments(v);
+    }
+
+    // 4.If v is a leaf – check each point
+    // in R(v) if inside Q
+    if (v.isLeaf()) {
+      for (LineSegment lineSegment : v.getLineSegments()) {
+        if (v.getRegion().doesIntersectWith(lineSegment)) {
+          changeLineSegment(lineSegment);
+        }
+      }
+    } else {
+      for (Node u : v.getChildren()) {
+        report(queryDisk, u);
+      }  
+    }
+    return;
+  }
+
   public Node getRoot() {
     return root;
   }
@@ -109,5 +153,31 @@ class QuadTree {
       println("]");
     }
     return;
+  }
+
+  private void resetAllLineSegments(Node v) {
+    for (LineSegment lineSegment : v.getLineSegments()) {
+      lineSegment.getColor().setBlack();
+      lineSegment.setWidth(1);
+    }
+    if (!v.isLeaf()) {
+      for (Node u : v.getChildren())
+      resetAllLineSegments(u);
+    }
+  }
+  private void changeLineSegment(LineSegment lineSegment) {
+    lineSegment.setColor(new Color(0, 0, 255));
+    lineSegment.setWidth(4);
+  }
+
+  private void changeLineSegments(Node v) {
+    for (LineSegment lineSegment : v.getLineSegments()) {
+      changeLineSegment(lineSegment);
+    }
+    if (!v.isLeaf()) {
+      for (Node u : v.getChildren()) {
+        changeLineSegments(u);
+      }
+    }
   }
 }

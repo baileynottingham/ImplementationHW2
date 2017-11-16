@@ -7,7 +7,7 @@ Button animationButton;
 Button reportButton;
 Button partyButton;
 QuadTree quadTree = null;
-java.util.List<LineSegment> lineSegments = null;
+java.util.List<LineSegment> lineSegments = new ArrayList<LineSegment>();
 
 
 void setup() {
@@ -91,7 +91,7 @@ void processFile(String fileName) {
   int height = parseFileForHeight(fileName);
   quadTree = new QuadTree(height);
   quadTree.traverseTree();
-  lineSegments = parseFileForLineSegments(fileName);
+  parseFileForLineSegments(fileName);
   println("Number of line segments: "+ lineSegments.size());
 
   for (LineSegment lineSegment : lineSegments) {
@@ -111,11 +111,10 @@ int parseFileForHeight(String filename) {
   return -1;
 }
 
-java.util.List<LineSegment> parseFileForLineSegments(String filename) {
+void parseFileForLineSegments(String filename) {
   BufferedReader reader;
   String line = null;
   reader = createReader(filename);
-  java.util.List<LineSegment> lines = new ArrayList<LineSegment>();
   try {
     // read the first line, but dont do anything with it.
     Integer.parseInt(reader.readLine());
@@ -129,14 +128,14 @@ java.util.List<LineSegment> parseFileForLineSegments(String filename) {
       int x1 = Integer.parseInt(ints[0]);
       int x2 = Integer.parseInt(ints[1]);
       int y = Integer.parseInt(ints[2]);
-      lines.add(new LineSegment(x1, x2, y));
+      lineSegments.add(new LineSegment(x1, x2, y));
       }
       reader.close();
     }
     catch (Exception e) {
       System.err.println("Error occured when parsing " + filename + ". Error msg: " + e.getMessage());
     }
-    return lines;
+    return;
 }
 
 /*******************************************************************************

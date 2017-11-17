@@ -45,7 +45,7 @@ class QuadTree {
 
   public void split(Node v) {
     if (v.getHeight() >= this.height) {
-      System.err.out("Can not split anymore becuase we have reached the max height");
+      System.err.println("Can not split anymore becuase we have reached the max height");
       // delete the line segment that we just added because we have reached the maximum split level.
       v.getLineSegments().remove(v.getLineSegments().size() - 1);
       return;
@@ -62,19 +62,19 @@ class QuadTree {
     int yShift = ymin;
 
     int newHeight = v.getHeight() + 1;
-    Rectangle northWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2, newHeight);
+    Rectangle northWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
     yShift = ymin + ((ymax/2) - ymin);
-    Rectangle southWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2, newHeight);
+    Rectangle southWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
     xShift = xmin + ((xmax/2) - xmin);
     yShift = ymin;
-    Rectangle northEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2, newHeight);
+    Rectangle northEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
     yShift = ymin + ((ymax/2) - ymin);
-    Rectangle southEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2, newHeight);
+    Rectangle southEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
 
-    children.add(new Node(northWestRegion, SplitRegion.NORTH_WEST));
-    children.add(new Node(northEastRegion, SplitRegion.NORTH_EAST));
-    children.add(new Node(southWestRegion, SplitRegion.SOUTH_WEST));
-    children.add(new Node(southEastRegion, SplitRegion.SOUTH_EAST));
+    children.add(new Node(northWestRegion, SplitRegion.NORTH_WEST, newHeight));
+    children.add(new Node(northEastRegion, SplitRegion.NORTH_EAST, newHeight));
+    children.add(new Node(southWestRegion, SplitRegion.SOUTH_WEST, newHeight));
+    children.add(new Node(southEastRegion, SplitRegion.SOUTH_EAST, newHeight));
 
     for (Node u : v.getChildren()) {
       for (LineSegment lineSegment : v.getLineSegments()) {

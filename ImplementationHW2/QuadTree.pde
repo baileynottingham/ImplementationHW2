@@ -15,6 +15,7 @@ class QuadTree {
     int numPixels = (int) java.lang.Math.pow(2, height);
     root.setRegion(new Rectangle(0, numPixels, 0, numPixels));
     root.setSplitRegion(SplitRegion.WHOLE_GRAPH);
+    root.setHeight(0);
     // Regardless of the data, the QuadTree always has four leaf nodes to begin with.
     split(root);
   }
@@ -43,6 +44,12 @@ class QuadTree {
   }
 
   public void split(Node v) {
+    if (v.getHeight() >= this.height) {
+      System.err.out("Can not split anymore becuase we have reached the max height");
+      // delete the line segment that we just added because we have reached the maximum split level.
+      v.getLineSegments().remove(v.getLineSegments().size() - 1);
+      return;
+    }
     java.util.List<Node> children = v.getChildren();
     int xmin = v.getRegion().getXMin();
     int xmax = v.getRegion().getXMax();
@@ -54,14 +61,15 @@ class QuadTree {
     int xShift = xmin;
     int yShift = ymin;
 
-    Rectangle northWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
+    int newHeight = v.getHeight() + 1;
+    Rectangle northWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2, newHeight);
     yShift = ymin + ((ymax/2) - ymin);
-    Rectangle southWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
+    Rectangle southWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2, newHeight);
     xShift = xmin + ((xmax/2) - xmin);
     yShift = ymin;
-    Rectangle northEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
+    Rectangle northEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2, newHeight);
     yShift = ymin + ((ymax/2) - ymin);
-    Rectangle southEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
+    Rectangle southEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2, newHeight);
 
     children.add(new Node(northWestRegion, SplitRegion.NORTH_WEST));
     children.add(new Node(northEastRegion, SplitRegion.NORTH_EAST));

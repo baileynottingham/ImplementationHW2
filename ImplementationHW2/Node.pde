@@ -9,7 +9,8 @@ public class Node {
   private java.util.List<Node> children;
   private Rectangle region;
   private java.util.List<LineSegment> lineSegments;
-  private SplitRegion splitRegion; 
+  private SplitRegion splitRegion;
+  private int height;
 
   public Node() {
     region = null;
@@ -17,10 +18,11 @@ public class Node {
     lineSegments = new ArrayList<LineSegment>();
   }
 
-  public Node(Rectangle region, SplitRegion splitRegion) {
+  public Node(Rectangle region, SplitRegion splitRegion, int height) {
     this();
     this.region = region;
     this.splitRegion = splitRegion;
+    this.height = height;
   }
 
   public java.util.List<Node> getChildren() {
@@ -50,6 +52,14 @@ public class Node {
 
   public SplitRegion getSplitRegion() {
     return splitRegion;
+  }
+
+  public int getHeight() {
+    return this.height;
+  }
+
+  public void setHeight(int height) {
+    this.height = height;
   }
 
   public boolean isLeaf() {

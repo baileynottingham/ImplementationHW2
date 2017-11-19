@@ -9,36 +9,45 @@ Button partyButton;
 QuadTree quadTree = null;
 java.util.List<LineSegment> lineSegments = new ArrayList<LineSegment>();
 
+boolean quadTreeInitialized = false;
+boolean animationOn = true;
+boolean insertOn = false;
+boolean reportOn = false;
 
 void setup() {
-  size(800, 512);
+  size(512, 630);
   smooth();
   textSize(16);
 
   //Create Clickable Buttons
-  restartButton = new Button("Restart", 15, 450, 115, 35);
-  readFileButton = new Button("Read File", 145, 450, 115, 35);
-  animationButton = new Button("Animation", 275, 450, 115, 35);
-  insertButton = new Button("Insert", 405, 450, 115, 35);
-  reportButton = new Button("Report", 535, 450, 115, 35);
-  
+  restartButton = new Button("Restart", 10, 520, 80, 35);
+  readFileButton = new Button("Read File", 110, 520, 80, 35);
+  animationButton = new Button("Animation", 210, 520, 90, 35);
+  insertButton = new Button("Insert", 320, 520, 80, 35);
+  reportButton = new Button("Report", 420, 520, 80, 35);
 } //END setup
 
 
 void draw() {
   smooth();
-  fill(256,256,256);
-  rect(0, 0, 799, 399);
-  
-  fill(0);
-  rect(0, 400, 800, 100);
-  fill(256,256,256);
+  stroke(0, 0, 0);
+  strokeWeight(1);
+  fill(256, 256, 256);
+  rect(0, 0, 512, 512);
+
+  fill(102, 255, 178);
+  rect(0, 512, 512, 188);
+  fill(256, 256, 256);
   drawButtons();
-  fill(256,256,256);
+  fill(256, 256, 256);
   textAlign(LEFT, TOP);
   text("Type Filename: " + "sample text goes here", 10, 410, width, height);
-  fill(250,0,0);
+  displayBottomText();
+  fill(250, 0, 0);
   
+  if(quadTreeInitialized && animationOn) {
+    quadTree.displayQuadTree(quadTree.getRoot());
+  }
 } //END draw
 
 /*******************************************************************************
@@ -48,7 +57,6 @@ void draw() {
  *              program without stopping the entire thing.
  *******************************************************************************/
 void restart() {
-  
 } //END restart
 
 
@@ -61,25 +69,23 @@ void restart() {
 void mousePressed() {
   // user presses "Restart"
   if (restartButton.mouseOver()) {
-      javax.swing.JOptionPane.showMessageDialog(null, "restart Button Pressed ");
+    javax.swing.JOptionPane.showMessageDialog(null, "restart Button Pressed ");
     restart();
   }
   // user presses "Read File" or "Read New File"
   else if (readFileButton.mouseOver()) {
-      String fileName = javax.swing.JOptionPane.showInputDialog( null, "File Name", "" );
-      processFile( fileName );
-   
+    String fileName = javax.swing.JOptionPane.showInputDialog( null, "File Name", "" );
+    processFile( fileName );
   }
   // user presses "Quit"
   else if (reportButton.mouseOver()) {
-      javax.swing.JOptionPane.showMessageDialog(null, "Quit Button Pressed ");
+    javax.swing.JOptionPane.showMessageDialog(null, "Quit Button Pressed ");
     exit();
   }
   // user presses "Highlight"
   else if (animationButton.mouseOver() ) {
-    
-      javax.swing.JOptionPane.showMessageDialog(null, "Highlight Button Pressed ");
-   
+
+    javax.swing.JOptionPane.showMessageDialog(null, "Highlight Button Pressed ");
   }
   // user presses "Next"
   else if (insertButton.mouseOver()) {
@@ -98,6 +104,7 @@ void processFile(String fileName) {
     quadTree.insert(lineSegment);
   }
   quadTree.traverseTree();
+  quadTreeInitialized = true;
 }
 
 int parseFileForHeight(String filename) {
@@ -105,8 +112,9 @@ int parseFileForHeight(String filename) {
   try {
     int height = Integer.parseInt(reader.readLine());
     reader.close();
-    return height;  
-  } catch (Exception e) {
+    return height;
+  } 
+  catch (Exception e) {
   }
   return -1;
 }
@@ -129,13 +137,13 @@ void parseFileForLineSegments(String filename) {
       int x2 = Integer.parseInt(ints[1]);
       int y = Integer.parseInt(ints[2]);
       lineSegments.add(new LineSegment(x1, x2, y));
-      }
-      reader.close();
     }
-    catch (Exception e) {
-      System.err.println("Error occured when parsing " + filename + ". Error msg: " + e.getMessage());
-    }
-    return;
+    reader.close();
+  }
+  catch (Exception e) {
+    System.err.println("Error occured when parsing " + filename + ". Error msg: " + e.getMessage());
+  }
+  return;
 }
 
 /*******************************************************************************
@@ -150,5 +158,29 @@ void drawButtons() {
   animationButton.drawButton();
   insertButton.drawButton();
   reportButton.drawButton();
- 
+}
+
+void displayBottomText() {
+  fill(0);
+  text("Animation Mode = ", 10, 565, width, height);
+  if(animationOn) {
+    text("ON", 157, 565, width, height);
+  }
+  else {
+    text("OFF", 157, 565, width, height);
+  }
+  text("Insert Mode = ", 10, 585, width, height);
+  if(insertOn) {
+    text("ON", 122, 585, width, height);
+  }
+  else {
+    text("OFF", 122, 585, width, height);
+  }
+  text("Report Mode = ", 10, 605, width, height);
+  if(reportOn) {
+    text("ON", 128, 605, width, height);
+  }
+  else {
+    text("OFF", 128, 605, width, height);
+  }
 }

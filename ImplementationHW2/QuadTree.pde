@@ -188,4 +188,41 @@ class QuadTree {
       }
     }
   }
+
+
+
+  public void displayQuadTree(Node node) {
+    if (!node.isLeaf()) {
+//     rect(node.getRegion().getXMin(), node.getRegion().getYMin(), node.getRegion().getWidth(), node.getRegion().getHeight());
+      drawSplitRegion(node.getRegion());
+      for (Node u : node.getChildren()) {
+        displayQuadTree(u);
+      }
+    } else {
+ //     drawSplitRegion(node.getRegion());
+      java.util.List<LineSegment> segs = node.getLineSegments();
+      strokeWeight(2);
+      stroke(51, 51, 255);
+      for(int i = 0; i < segs.size(); i++) {
+         line(segs.get(i).getLeftPoint().getX(), segs.get(i).getLeftPoint().getY(), segs.get(i).getRightPoint().getX(), segs.get(i).getRightPoint().getY());
+      }
+    }
+  }
+  
+  public void drawSplitRegion(Rectangle rect) {
+     stroke(0);
+     strokeWeight(1);
+     // Draw upper segment of rectangle 
+     line(rect.getXMin(), rect.getYMin(), rect.getXMin() + rect.getWidth(), rect.getYMin());
+     // Draw lower segment of rectangle
+     line(rect.getXMin(), rect.getYMin() + rect.getHeight(), rect.getXMin() + rect.getWidth(), rect.getYMin() + rect.getHeight());
+     // Draw right segment of rectangle
+     line(rect.getXMin() + rect.getWidth(), rect.getYMin(), rect.getXMin() + rect.getWidth(), rect.getYMin() + rect.getHeight());
+     // Draw left segment of rectangle
+     line(rect.getXMin(), rect.getYMin(), rect.getXMin(), rect.getYMin() + rect.getHeight());
+     // Draw vertical segment down the middle
+     line(rect.getXMin() + (rect.getXMax() / 2), rect.getYMin(), rect.getXMin() + (rect.getXMax() / 2), rect.getYMin() + rect.getHeight());
+     // Draw horizontal segment
+     line(rect.getXMin(), rect.getYMin() + (rect.getHeight() / 2), rect.getXMin() + rect.getWidth(), rect.getYMin() + (rect.getHeight() / 2));
+  }
 }

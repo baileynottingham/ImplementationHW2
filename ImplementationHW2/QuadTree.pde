@@ -41,6 +41,7 @@ class QuadTree {
         split(v);
       }
     }
+    traverseHelper(root);
   }
 
   public void split(Node v) {
@@ -122,7 +123,7 @@ class QuadTree {
     } else {
       for (Node u : v.getChildren()) {
         report(queryDisk, u);
-      }  
+      }
     }
     return;
   }
@@ -153,7 +154,7 @@ class QuadTree {
         traverseHelper(u);
       }
     } else {
-      print("[ Region: " + node.getSplitRegion() + ".\t" + node.getRegion()+"\t");
+      println("[ Region: " + node.getSplitRegion() + ".\t" + node.getRegion()+"\t Width: " + node.getRegion().getWidth() + "\t Height: " + node.getRegion().getHeight());
       print("line segments: ");
       for (LineSegment lineSegment : node.getLineSegments()) {
         print(lineSegment + ", ");
@@ -170,7 +171,7 @@ class QuadTree {
     }
     if (!v.isLeaf()) {
       for (Node u : v.getChildren())
-      resetAllLineSegments(u);
+        resetAllLineSegments(u);
     }
   }
   private void changeLineSegment(LineSegment lineSegment) {
@@ -193,36 +194,35 @@ class QuadTree {
 
   public void displayQuadTree(Node node) {
     if (!node.isLeaf()) {
-//     rect(node.getRegion().getXMin(), node.getRegion().getYMin(), node.getRegion().getWidth(), node.getRegion().getHeight());
-      drawSplitRegion(node.getRegion());
       for (Node u : node.getChildren()) {
         displayQuadTree(u);
       }
+      drawSplitRegion(node);
     } else {
- //     drawSplitRegion(node.getRegion());
+      //drawSplitRegion(node);
       java.util.List<LineSegment> segs = node.getLineSegments();
-      strokeWeight(2);
+      strokeWeight(3);
       stroke(51, 51, 255);
-      for(int i = 0; i < segs.size(); i++) {
-         line(segs.get(i).getLeftPoint().getX(), segs.get(i).getLeftPoint().getY(), segs.get(i).getRightPoint().getX(), segs.get(i).getRightPoint().getY());
+      for (int i = 0; i < segs.size(); i++) {
+        line(segs.get(i).getLeftPoint().getX(), segs.get(i).getLeftPoint().getY(), segs.get(i).getRightPoint().getX(), segs.get(i).getRightPoint().getY());
       }
     }
   }
-  
-  public void drawSplitRegion(Rectangle rect) {
-     stroke(0);
-     strokeWeight(1);
-     // Draw upper segment of rectangle 
-     line(rect.getXMin(), rect.getYMin(), rect.getXMin() + rect.getWidth(), rect.getYMin());
-     // Draw lower segment of rectangle
-     line(rect.getXMin(), rect.getYMin() + rect.getHeight(), rect.getXMin() + rect.getWidth(), rect.getYMin() + rect.getHeight());
-     // Draw right segment of rectangle
-     line(rect.getXMin() + rect.getWidth(), rect.getYMin(), rect.getXMin() + rect.getWidth(), rect.getYMin() + rect.getHeight());
-     // Draw left segment of rectangle
-     line(rect.getXMin(), rect.getYMin(), rect.getXMin(), rect.getYMin() + rect.getHeight());
-     // Draw vertical segment down the middle
-     line(rect.getXMin() + (rect.getXMax() / 2), rect.getYMin(), rect.getXMin() + (rect.getXMax() / 2), rect.getYMin() + rect.getHeight());
-     // Draw horizontal segment
-     line(rect.getXMin(), rect.getYMin() + (rect.getHeight() / 2), rect.getXMin() + rect.getWidth(), rect.getYMin() + (rect.getHeight() / 2));
+
+  public void drawSplitRegion(Node node) {
+    stroke(0);
+    strokeWeight(1);
+    // Draw upper segment of rectangle node
+    line(node.getRegion().getXMin(), node.getRegion().getYMin(), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin());
+    // Draw lower segment of rectangle
+    line(node.getRegion().getXMin(), node.getRegion().getYMin() + node.getRegion().getHeight(), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin() + node.getRegion().getHeight());
+    // Draw right segment of rectangle
+    line(node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin(), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin() + node.getRegion().getHeight());
+    // Draw left segment of rectangle
+    line(node.getRegion().getXMin(), node.getRegion().getYMin(), node.getRegion().getXMin(), node.getRegion().getYMin() + node.getRegion().getHeight());
+    // Draw vertical segment down the middle
+    line(node.getRegion().getXMin() + (node.getRegion().getXMax() / 2), node.getRegion().getYMin(), node.getRegion().getXMin() + (node.getRegion().getXMax() / 2), node.getRegion().getYMin() + node.getRegion().getHeight());
+    // Draw horizontal segment
+    line(node.getRegion().getXMin(), node.getRegion().getYMin() + (node.getRegion().getHeight() / 2), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin() + (node.getRegion().getHeight() / 2));
   }
 }

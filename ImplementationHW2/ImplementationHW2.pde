@@ -48,6 +48,7 @@ void draw() {
   if(quadTreeInitialized && animationOn) {
     quadTree.displayQuadTree(quadTree.getRoot());
   }
+  
 } //END draw
 
 /*******************************************************************************
@@ -87,9 +88,18 @@ void mousePressed() {
 
     javax.swing.JOptionPane.showMessageDialog(null, "Highlight Button Pressed ");
   }
-  // user presses "Next"
+  // user presses "Insert"
   else if (insertButton.mouseOver()) {
-    javax.swing.JOptionPane.showMessageDialog(null, "Next Button Pressed ");
+    if(insertOn == false) {
+      insertOn = true;
+    }
+    else {
+      insertOn = false;
+    }
+  }
+  
+  if(insertOn) {
+   quadTree.insert(new LineSegment(mouseX, mouseX, mouseY)); 
   }
 } //END mousePressed
 

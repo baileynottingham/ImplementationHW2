@@ -38,10 +38,10 @@ class QuadTree {
     } else {
       v.addLineSegment(lineSegment);
       if (v.shouldSplit()) {
+        System.err.println("QuadTree[ insert ]: we are going to split.");
         split(v);
       }
     }
-    traverseHelper(root);
   }
 
   public void split(Node v) {
@@ -167,7 +167,7 @@ class QuadTree {
   private void resetAllLineSegments(Node v) {
     for (LineSegment lineSegment : v.getLineSegments()) {
       lineSegment.getColor().setBlack();
-      lineSegment.setWidth(1);
+      lineSegment.setWeight(4);
     }
     if (!v.isLeaf()) {
       for (Node u : v.getChildren())
@@ -176,7 +176,7 @@ class QuadTree {
   }
   private void changeLineSegment(LineSegment lineSegment) {
     lineSegment.setColor(new Color(0, 0, 255));
-    lineSegment.setWidth(4);
+    lineSegment.setWeight(8);
   }
 
   private void changeLineSegments(Node v) {
@@ -194,12 +194,11 @@ class QuadTree {
 
   public void displayQuadTree(Node node) {
     if (!node.isLeaf()) {
+      drawSplitRegion(node);
       for (Node u : node.getChildren()) {
         displayQuadTree(u);
       }
-      drawSplitRegion(node);
     } else {
-      //drawSplitRegion(node);
       java.util.List<LineSegment> segs = node.getLineSegments();
       strokeWeight(3);
       stroke(51, 51, 255);
@@ -211,7 +210,7 @@ class QuadTree {
 
   public void drawSplitRegion(Node node) {
     stroke(0);
-    strokeWeight(1);
+    strokeWeight(2);
     // Draw upper segment of rectangle node
     line(node.getRegion().getXMin(), node.getRegion().getYMin(), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin());
     // Draw lower segment of rectangle

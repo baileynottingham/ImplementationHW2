@@ -3,7 +3,7 @@ class LineSegment {
   private Point leftPoint;
   private Point rightPoint;
   private int verticalShift;
-  private int width;
+  private int weight;
   /**
    * I know 'colorObj' is a terrible name, but 
    * it seems like Processing has 'color' as a
@@ -17,7 +17,7 @@ class LineSegment {
     leftPoint = new Point(Math.min(x1, x2), y);
     rightPoint = new Point(Math.max(x1, x2), y);
     verticalShift = y;
-    width = 1;
+    weight = 4;
     colorObj = new Color(0, 0, 0);
   }
 
@@ -32,12 +32,12 @@ class LineSegment {
     return verticalShift;
   }
 
-  public int getWidth() {
+  public int getWeight() {
     return width;
   }
 
-  public void setWidth(int w) {
-    this.width = w;
+  public void setWeight(int w) {
+    this.weight = w;
   }
 
   /**

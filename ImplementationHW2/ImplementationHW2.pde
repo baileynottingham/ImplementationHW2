@@ -44,11 +44,10 @@ void draw() {
   text("Type Filename: " + "sample text goes here", 10, 410, width, height);
   displayBottomText();
   fill(250, 0, 0);
-  
-  if(quadTreeInitialized && animationOn) {
+
+  if (quadTreeInitialized && animationOn) {
     quadTree.displayQuadTree(quadTree.getRoot());
   }
-  
 } //END draw
 
 /*******************************************************************************
@@ -90,23 +89,22 @@ void mousePressed() {
   }
   // user presses "Insert"
   else if (insertButton.mouseOver()) {
-    if(insertOn == false) {
+    if (insertOn == false) {
       insertOn = true;
-    }
-    else {
+    } else {
       insertOn = false;
     }
   }
-  
-  if(insertOn) {
-   quadTree.insert(new LineSegment(mouseX, mouseX, mouseY)); 
+
+  if (insertOn) {
+    quadTree.insert(new LineSegment(mouseX, mouseX, mouseY));
   }
 } //END mousePressed
 
 void processFile(String fileName) {
   int height = parseFileForHeight(fileName);
   quadTree = new QuadTree(height);
-  quadTree.traverseTree();
+  // quadTree.traverseTree();
   parseFileForLineSegments(fileName);
   println("Number of line segments: "+ lineSegments.size());
 
@@ -133,6 +131,7 @@ void parseFileForLineSegments(String filename) {
   BufferedReader reader;
   String line = null;
   reader = createReader(filename);
+
   try {
     // read the first line, but dont do anything with it.
     Integer.parseInt(reader.readLine());
@@ -141,11 +140,12 @@ void parseFileForLineSegments(String filename) {
     while ((line = reader.readLine()) != null) {
       String[] ints = line.split(",");
       if (ints.length != 3) {
-        throw new Exception("Excpeted 3 integers.");
+        System.err.println("Excpeted 3 integers.");
+        continue;
       }
-      int x1 = Integer.parseInt(ints[0]);
-      int x2 = Integer.parseInt(ints[1]);
-      int y = Integer.parseInt(ints[2]);
+      int x1 = Integer.parseInt(ints[0].trim());
+      int x2 = Integer.parseInt(ints[1].trim());
+      int y = Integer.parseInt(ints[2].trim());
       lineSegments.add(new LineSegment(x1, x2, y));
     }
     reader.close();
@@ -173,24 +173,21 @@ void drawButtons() {
 void displayBottomText() {
   fill(0);
   text("Animation Mode = ", 10, 565, width, height);
-  if(animationOn) {
+  if (animationOn) {
     text("ON", 157, 565, width, height);
-  }
-  else {
+  } else {
     text("OFF", 157, 565, width, height);
   }
   text("Insert Mode = ", 10, 585, width, height);
-  if(insertOn) {
+  if (insertOn) {
     text("ON", 122, 585, width, height);
-  }
-  else {
+  } else {
     text("OFF", 122, 585, width, height);
   }
   text("Report Mode = ", 10, 605, width, height);
-  if(reportOn) {
+  if (reportOn) {
     text("ON", 128, 605, width, height);
-  }
-  else {
+  } else {
     text("OFF", 128, 605, width, height);
   }
 }

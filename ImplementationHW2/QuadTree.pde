@@ -24,6 +24,7 @@ class QuadTree {
 
   public void insert(LineSegment lineSegment) {
     insert(lineSegment, root);
+    numberOfSegments++;
     traverseTree();
     println("--------------------------------------------");
   }
@@ -206,11 +207,11 @@ class QuadTree {
   }
 
   int getNumberOfSegments() {
-    numberOfSegments = 0;
-    travsereTreeGetNumberOfSegments(root);
-    int temp = numberOfSegments;
-    numberOfSegments = 0;
-    return temp;
+    //numberOfSegments = 0;
+    //travsereTreeGetNumberOfSegments(root);
+    //int temp = numberOfSegments;
+    //numberOfSegments = 0;
+    return numberOfSegments;
   }
 
   void travsereTreeGetNumberOfSegments(Node node) {

@@ -1,4 +1,4 @@
-/**
+/** //<>// //<>//
  * Maintains a pointer to the root, and has the responsibility
  * to add line segments to its children, and query itself.
  * @author Bailey Nottingham
@@ -8,6 +8,8 @@ class QuadTree {
 
   private int height = 0;
   private Node root = new Node();
+  private int numberOfNodes = 0;
+  private int numberOfSegments = 0;
 
   QuadTree(int height) {
     this.height = height;
@@ -22,16 +24,19 @@ class QuadTree {
 
   public void insert(LineSegment lineSegment) {
     insert(lineSegment, root);
+    traverseTree();
+    println("--------------------------------------------");
   }
 
-  public void insert(LineSegment lineSegment, Node v) { //<>//
+  public void insert(LineSegment lineSegment, Node v) {
     if (v == null) {
       System.err.println("QuadTree[ insert ] v is null. This shouldn't happen.");
       return;
     }
-    if (v.getRegion().isDisjoint(lineSegment)) {
+    if ((v.getRegion().isDisjoint(lineSegment))) {
       return;
-    } else if (!v.isLeaf()) {
+    } 
+    if (!v.isLeaf()) {
       for (Node u : v.getChildren()) {
         insert(lineSegment, u);
       }
@@ -51,32 +56,23 @@ class QuadTree {
       v.getLineSegments().remove(v.getLineSegments().size() - 1);
       return;
     }
-    java.util.List<Node> children = v.getChildren();
     int xmin = v.getRegion().getXMin();
-    int xmax = v.getRegion().getXMax();
     int ymin = v.getRegion().getYMin();
-    int ymax = v.getRegion().getYMax();
 
-    int width = xmax - xmin;
-    int height = ymax - ymin;
-    int xShift = xmin;
-    int yShift = ymin;
+    int width = v.getRegion().getWidth();
+    int height = v.getRegion().getHeight();
 
     int newHeight = v.getHeight() + 1;
-    Rectangle northWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
-    yShift = ymin + ((ymax/2) - ymin);
-    Rectangle southWestRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
-    xShift = xmin + ((xmax/2) - xmin);
-    yShift = ymin;
-    Rectangle northEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
-    yShift = ymin + ((ymax/2) - ymin);
-    Rectangle southEastRegion = new Rectangle(xShift, xShift + width / 2, yShift, yShift + height / 2);
 
-    children.add(new Node(northWestRegion, SplitRegion.NORTH_WEST, newHeight));
-    children.add(new Node(northEastRegion, SplitRegion.NORTH_EAST, newHeight));
-    children.add(new Node(southWestRegion, SplitRegion.SOUTH_WEST, newHeight));
-    children.add(new Node(southEastRegion, SplitRegion.SOUTH_EAST, newHeight));
+    Rectangle northWestRegion = new Rectangle(xmin, xmin +(width / 2), ymin, ymin + (height / 2));
+    Rectangle southWestRegion = new Rectangle(xmin, xmin + (width / 2), ymin + (height / 2), ymin + height);
+    Rectangle northEastRegion = new Rectangle(xmin + (width / 2), xmin + width, ymin, ymin + (height / 2));
+    Rectangle southEastRegion = new Rectangle(xmin + (width / 2), xmin + width, ymin + (height / 2), ymin + height);
 
+    v.children.add(new Node(northWestRegion, SplitRegion.NORTH_WEST, newHeight));
+    v.children.add(new Node(northEastRegion, SplitRegion.NORTH_EAST, newHeight));
+    v.children.add(new Node(southWestRegion, SplitRegion.SOUTH_WEST, newHeight));
+    v.children.add(new Node(southEastRegion, SplitRegion.SOUTH_EAST, newHeight));
     for (Node u : v.getChildren()) {
       for (LineSegment lineSegment : v.getLineSegments()) {
         insert(lineSegment, u);
@@ -190,11 +186,47 @@ class QuadTree {
     }
   }
 
+  int getNumberOfNodes() {
+    numberOfNodes = 0;
+    travsereTreeGetNumberOfNodes(root);
+    int temp = numberOfNodes;
+    numberOfNodes = 0;
+    return temp;
+  }
 
+  void travsereTreeGetNumberOfNodes(Node node) {
+    if (!node.isLeaf()) {
+      numberOfNodes++;
+      for (Node u : node.getChildren()) {
+        travsereTreeGetNumberOfNodes(u);
+      }
+    } else {
+      numberOfNodes++;
+    }
+  }
+
+  int getNumberOfSegments() {
+    numberOfSegments = 0;
+    travsereTreeGetNumberOfSegments(root);
+    int temp = numberOfSegments;
+    numberOfSegments = 0;
+    return temp;
+  }
+
+  void travsereTreeGetNumberOfSegments(Node node) {
+    if (!node.isLeaf()) {
+      for (Node u : node.getChildren()) {
+        travsereTreeGetNumberOfSegments(u);
+      }
+    } else {
+      numberOfSegments = numberOfSegments + node.getLineSegments().size();
+    }
+  }
 
   public void displayQuadTree(Node node) {
     if (!node.isLeaf()) {
       drawSplitRegion(node);
+      flush();
       for (Node u : node.getChildren()) {
         displayQuadTree(u);
       }
@@ -205,6 +237,7 @@ class QuadTree {
       for (int i = 0; i < segs.size(); i++) {
         line(segs.get(i).getLeftPoint().getX(), segs.get(i).getLeftPoint().getY(), segs.get(i).getRightPoint().getX(), segs.get(i).getRightPoint().getY());
       }
+      flush();
     }
   }
 

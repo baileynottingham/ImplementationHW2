@@ -1,4 +1,4 @@
-
+ //<>//
 //Buttons
 Button readFileButton;
 Button restartButton;
@@ -13,11 +13,6 @@ boolean quadTreeInitialized = false;
 boolean animationOn = true;
 boolean insertOn = false;
 boolean reportOn = false;
-
-int clicks = 0;
-int firstLeftClick = 0;
-int firstRightClick = 0;
-int secondLeftClick = 0;
 
 void setup() {
   size(512, 630);
@@ -53,6 +48,7 @@ void draw() {
   if (quadTreeInitialized && animationOn) {
     quadTree.displayQuadTree(quadTree.getRoot());
   }
+  flush();
 } //END draw
 
 /*******************************************************************************
@@ -72,23 +68,10 @@ void restart() {
  *              A single mouse click could be hitting any of the buttons.
  *******************************************************************************/
 void mousePressed() {
-//  if (insertOn) {
-//    quadTree.insert(new LineSegment(mouseX, mouseX, mouseY));
-//  }
   if (insertOn) {
-    clicks++;
+    quadTree.insert(new LineSegment(mouseX, mouseX, mouseY));
   }
-  if (clicks == 1) {
-    firstLeftClick = mouseX;
-    firstRightClick = mouseY;
-  }
-  if (clicks == 2) {
-    secondLeftClick = mouseX;
-  }
-  if (insertOn && clicks == 2) {
-    quadTree.insert(new LineSegment(firstLeftClick, secondLeftClick, firstRightClick));
-    clicks = 0;
-  }
+
   // user presses "Restart"
   if (restartButton.mouseOver()) {
     javax.swing.JOptionPane.showMessageDialog(null, "restart Button Pressed ");
@@ -118,25 +101,6 @@ void mousePressed() {
     }
   }
 } //END mousePressed
-
-void mouseClicked() {
-  //if (insertOn) {
-  //  quadTree.insert(new LineSegment(mouseX, mouseX, mouseY));
-  //}
-  //if (insertOn) {
-  //  clicks++;
-  //}
-  //if (clicks == 1) {
-  //  firstLeftClick = mouseX;
-  //  firstRightClick = mouseY;
-  //}
-  //if (clicks == 1) {
-  //  secondLeftClick = mouseX;
-  //}
-  //if (insertOn && clicks == 2) {
-  //  quadTree.insert(new LineSegment(firstLeftClick, secondLeftClick, firstRightClick));
-  //}
-}
 
 void processFile(String fileName) {
   int height = parseFileForHeight(fileName);
@@ -226,5 +190,12 @@ void displayBottomText() {
     text("ON", 128, 605, width, height);
   } else {
     text("OFF", 128, 605, width, height);
+  }
+  if (quadTreeInitialized) {
+    text("Number of Nodes = " + quadTree.getNumberOfNodes(), 280, 585, width, height);
+    text("Number of Segments = " + quadTree.getNumberOfSegments(), 280, 565, width, height);
+  } else {
+    text("Number of Nodes = 0", 280, 585, width, height);
+    text("Number of Segments = 0", 280, 565, width, height);
   }
 }

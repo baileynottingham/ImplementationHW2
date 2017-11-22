@@ -14,6 +14,11 @@ boolean animationOn = true;
 boolean insertOn = false;
 boolean reportOn = false;
 
+int clicks = 0;
+int firstLeftClick = 0;
+int firstRightClick = 0;
+int secondLeftClick = 0;
+
 void setup() {
   size(512, 630);
   smooth();
@@ -67,6 +72,23 @@ void restart() {
  *              A single mouse click could be hitting any of the buttons.
  *******************************************************************************/
 void mousePressed() {
+//  if (insertOn) {
+//    quadTree.insert(new LineSegment(mouseX, mouseX, mouseY));
+//  }
+  if (insertOn) {
+    clicks++;
+  }
+  if (clicks == 1) {
+    firstLeftClick = mouseX;
+    firstRightClick = mouseY;
+  }
+  if (clicks == 2) {
+    secondLeftClick = mouseX;
+  }
+  if (insertOn && clicks == 2) {
+    quadTree.insert(new LineSegment(firstLeftClick, secondLeftClick, firstRightClick));
+    clicks = 0;
+  }
   // user presses "Restart"
   if (restartButton.mouseOver()) {
     javax.swing.JOptionPane.showMessageDialog(null, "restart Button Pressed ");
@@ -95,11 +117,26 @@ void mousePressed() {
       insertOn = false;
     }
   }
-
-  if (insertOn) {
-    quadTree.insert(new LineSegment(mouseX, mouseX, mouseY));
-  }
 } //END mousePressed
+
+void mouseClicked() {
+  //if (insertOn) {
+  //  quadTree.insert(new LineSegment(mouseX, mouseX, mouseY));
+  //}
+  //if (insertOn) {
+  //  clicks++;
+  //}
+  //if (clicks == 1) {
+  //  firstLeftClick = mouseX;
+  //  firstRightClick = mouseY;
+  //}
+  //if (clicks == 1) {
+  //  secondLeftClick = mouseX;
+  //}
+  //if (insertOn && clicks == 2) {
+  //  quadTree.insert(new LineSegment(firstLeftClick, secondLeftClick, firstRightClick));
+  //}
+}
 
 void processFile(String fileName) {
   int height = parseFileForHeight(fileName);

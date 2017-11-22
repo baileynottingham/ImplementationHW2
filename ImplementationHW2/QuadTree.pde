@@ -24,7 +24,7 @@ class QuadTree {
     insert(lineSegment, root);
   }
 
-  public void insert(LineSegment lineSegment, Node v) {
+  public void insert(LineSegment lineSegment, Node v) { //<>//
     if (v == null) {
       System.err.println("QuadTree[ insert ] v is null. This shouldn't happen.");
       return;
@@ -220,7 +220,7 @@ class QuadTree {
     // Draw left segment of rectangle
     line(node.getRegion().getXMin(), node.getRegion().getYMin(), node.getRegion().getXMin(), node.getRegion().getYMin() + node.getRegion().getHeight());
     // Draw vertical segment down the middle
-    line(node.getRegion().getXMin() + (node.getRegion().getXMax() / 2), node.getRegion().getYMin(), node.getRegion().getXMin() + (node.getRegion().getXMax() / 2), node.getRegion().getYMin() + node.getRegion().getHeight());
+    line(node.getRegion().getXMin() + (node.getRegion().getWidth() / 2), node.getRegion().getYMin(), node.getRegion().getXMin() + (node.getRegion().getWidth() / 2), node.getRegion().getYMin() + node.getRegion().getHeight());
     // Draw horizontal segment
     line(node.getRegion().getXMin(), node.getRegion().getYMin() + (node.getRegion().getHeight() / 2), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin() + (node.getRegion().getHeight() / 2));
   }

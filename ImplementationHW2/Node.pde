@@ -6,9 +6,9 @@
  */
 public class Node {
 
-  private java.util.List<Node> children;
+  public java.util.List<Node> children;
   private Rectangle region;
-  private java.util.List<LineSegment> lineSegments;
+  public java.util.List<LineSegment> lineSegments;
   private SplitRegion splitRegion;
   private int height;
 

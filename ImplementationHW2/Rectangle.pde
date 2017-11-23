@@ -1,6 +1,6 @@
 
 class Rectangle {
-   
+
   private int xmin;
   private int xmax;
   private int ymin;
@@ -44,10 +44,10 @@ class Rectangle {
   public boolean doesIntersectWith(LineSegment lineSegment) {
     java.awt.Rectangle rect = new java.awt.Rectangle(xmin, ymin, width, height);
     java.awt.geom.Line2D line = new java.awt.geom.Line2D.Double(
-                                                                (double)lineSegment.getLeftPoint().getX(),
-                                                                (double)lineSegment.getVerticalShift(),
-                                                                (double)lineSegment.getRightPoint().getX(),
-                                                                (double)lineSegment.getVerticalShift());
+      (double)lineSegment.getLeftPoint().getX(), 
+      (double)lineSegment.getVerticalShift(), 
+      (double)lineSegment.getRightPoint().getX(), 
+      (double)lineSegment.getVerticalShift());
     return line.intersects(rect);
   } 
 
@@ -57,24 +57,24 @@ class Rectangle {
   public boolean isDisjoint(LineSegment lineSegment) {
     java.awt.Rectangle rect = new java.awt.Rectangle(xmin, ymin, width, height);
     java.awt.geom.Line2D line = new java.awt.geom.Line2D.Double(
-                                                                (double)lineSegment.getLeftPoint().getX(),
-                                                                (double)lineSegment.getVerticalShift(),
-                                                                (double)lineSegment.getRightPoint().getX(),
-                                                                (double)lineSegment.getVerticalShift());
+      (double)lineSegment.getLeftPoint().getX(), 
+      (double)lineSegment.getVerticalShift(), 
+      (double)lineSegment.getRightPoint().getX(), 
+      (double)lineSegment.getVerticalShift());
     return !line.intersects(rect);
   }
 
   public boolean isDisjoint(Rectangle queryDisk) {
     java.awt.Rectangle queryRectangle = new java.awt.Rectangle(
-                                                                queryDisk.getXMin(),
-                                                                queryDisk.getYMin(),
-                                                                queryDisk.getWidth(),
-                                                                queryDisk.getHeight());
+      queryDisk.getXMin(), 
+      queryDisk.getYMin(), 
+      queryDisk.getWidth(), 
+      queryDisk.getHeight());
     java.awt.Rectangle thisRectangle = new java.awt.Rectangle(
-                                                              this.xmin,
-                                                              this.ymin,
-                                                              this.width,
-                                                              this.height);
+      this.xmin, 
+      this.ymin, 
+      this.width, 
+      this.height);
     return !thisRectangle.intersects(queryRectangle);
   }
 
@@ -86,8 +86,34 @@ class Rectangle {
     return isInLeftBorder && isInRightBorder && isInTopBorder && isInBottomBorder;
   }
 
+  public boolean contains(Rectangle queryDisk) {
+    java.awt.Rectangle thisRectangle = new java.awt.Rectangle(
+      this.xmin, 
+      this.ymin, 
+      this.width, 
+      this.height);
+    java.awt.Rectangle queryRectangle = new java.awt.Rectangle(
+      queryDisk.getXMin(), 
+      queryDisk.getYMin(), 
+      queryDisk.getWidth(), 
+      queryDisk.getHeight());
+    return thisRectangle.contains(queryRectangle);
+  }
+
+  public boolean containsPoint(int x, int y) {
+    java.awt.Rectangle thisRectangle = new java.awt.Rectangle(
+      this.xmin, 
+      this.ymin, 
+      this.width, 
+      this.height);
+
+    java.awt.Point pt = new java.awt.Point(x, y);
+
+    return thisRectangle.contains(pt);
+  }
+
   @Override
-  public String toString() {
+    public String toString() {
     return "xmin: " + xmin + "\txmax:" + xmax + "\t" + "ymin:" + ymin + "\tymax:" + ymax;
   }
 }

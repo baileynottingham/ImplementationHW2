@@ -14,8 +14,12 @@ boolean animationOn = true;
 boolean insertOn = false;
 boolean reportOn = false;
 
-int highlightTime=5000;
-int startTime = 1;
+int tempX = 0;
+int tempY = 0;
+boolean justInserted = false;
+
+double highlightTime=5000;
+double startTime = 0;
 
 void setup() {
   size(512, 630);
@@ -48,10 +52,18 @@ void draw() {
   displayBottomText();
   fill(250, 0, 0);
 
-  if (quadTreeInitialized && animationOn) {
+  double currentTime= millis();
+  if (quadTreeInitialized && animationOn && (currentTime-startTime) > highlightTime) {
     quadTree.displayQuadTree(quadTree.getRoot());
   }
+  if (quadTreeInitialized && animationOn && justInserted && (currentTime-startTime) <= highlightTime) {
+    quadTree.displayQuadTree(quadTree.getRoot());
+    quadTree.animateInsert(tempX, tempY, quadTree.getRoot());
+  }
 
+  if ((currentTime-startTime) > highlightTime) {
+    justInserted = false;
+  }
   flush();
 } //END draw
 
@@ -73,11 +85,11 @@ void restart() {
  *******************************************************************************/
 void mousePressed() {
   if (insertOn) {
-    int tempX = mouseX;
-    int tempY = mouseY;
+    tempX = mouseX;
+    tempY = mouseY;
     quadTree.insert(new LineSegment(tempX, tempX, tempY));
-   // clear();
-    //quadTree.animateInsert(tempX, tempY, quadTree.getRoot());
+    justInserted = true;
+    startTime= millis();
   }
 
   // user presses "Restart"

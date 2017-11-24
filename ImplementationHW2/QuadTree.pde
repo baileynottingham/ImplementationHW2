@@ -24,7 +24,9 @@ class QuadTree {
 
   public void insert(LineSegment lineSegment) {
     insert(lineSegment, root);
-    numberOfSegments++;
+    if (!(root.getRegion().isDisjoint(lineSegment))) { 
+      numberOfSegments++;
+    }
     traverseTree();
     println("--------------------------------------------");
   }
@@ -256,8 +258,8 @@ class QuadTree {
   }
 
   public void drawSplitRegionReport(Node node) {
-    stroke(0);
-    strokeWeight(1000);
+    stroke(255, 0, 0);
+    strokeWeight(5);
     // Draw upper segment of rectangle node
     line(node.getRegion().getXMin(), node.getRegion().getYMin(), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin());
     // Draw lower segment of rectangle
@@ -266,10 +268,6 @@ class QuadTree {
     line(node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin(), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin() + node.getRegion().getHeight());
     // Draw left segment of rectangle
     line(node.getRegion().getXMin(), node.getRegion().getYMin(), node.getRegion().getXMin(), node.getRegion().getYMin() + node.getRegion().getHeight());
-    // Draw vertical segment down the middle
-    line(node.getRegion().getXMin() + (node.getRegion().getWidth() / 2), node.getRegion().getYMin(), node.getRegion().getXMin() + (node.getRegion().getWidth() / 2), node.getRegion().getYMin() + node.getRegion().getHeight());
-    // Draw horizontal segment
-    line(node.getRegion().getXMin(), node.getRegion().getYMin() + (node.getRegion().getHeight() / 2), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin() + (node.getRegion().getHeight() / 2));
   }
 
 
@@ -278,6 +276,10 @@ class QuadTree {
       drawSplitRegionReport(node);
       for (Node u : node.getChildren()) {
         animateInsert(x, y, u);
+      }
+    } else {
+      if (node.isLeaf() && node.getRegion().containsPoint(x, y)) {
+        drawSplitRegionReport(node);
       }
     }
     return;

@@ -1,4 +1,4 @@
- //<>//
+ //<>// //<>//
 //Buttons
 Button readFileButton;
 Button restartButton;
@@ -53,7 +53,7 @@ void draw() {
   fill(250, 0, 0);
 
   double currentTime= millis();
-  if (quadTreeInitialized && animationOn && (currentTime-startTime) > highlightTime) {
+  if (quadTreeInitialized && (currentTime-startTime) > highlightTime || animationOn == false) {
     quadTree.displayQuadTree(quadTree.getRoot());
   }
   if (quadTreeInitialized && animationOn && justInserted && (currentTime-startTime) <= highlightTime) {
@@ -107,10 +107,13 @@ void mousePressed() {
     javax.swing.JOptionPane.showMessageDialog(null, "Quit Button Pressed ");
     exit();
   }
-  // user presses "Highlight"
+  // user presses "Animation"
   else if (animationButton.mouseOver() ) {
-
-    javax.swing.JOptionPane.showMessageDialog(null, "Highlight Button Pressed ");
+    if (animationOn == false) {
+      animationOn = true;
+    } else {
+      animationOn = false;
+    }
   }
   // user presses "Insert"
   else if (insertButton.mouseOver()) {

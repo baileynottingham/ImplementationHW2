@@ -51,6 +51,7 @@ class Rectangle {
     return line.intersects(rect);
   } 
 
+
   /**
    * Checks that the line doesn't lay on this region.
    */
@@ -86,7 +87,8 @@ class Rectangle {
     return isInLeftBorder && isInRightBorder && isInTopBorder && isInBottomBorder;
   }
 
-  public boolean contains(Rectangle queryDisk) {
+
+  public boolean containsRect(Rectangle queryDisk) {
     java.awt.Rectangle thisRectangle = new java.awt.Rectangle(
       this.xmin, 
       this.ymin, 

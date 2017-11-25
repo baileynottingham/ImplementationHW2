@@ -11,6 +11,7 @@ public class Node {
   public java.util.List<LineSegment> lineSegments;
   private SplitRegion splitRegion;
   private int height;
+  public boolean reported = false;
 
   public Node() {
     region = null;
@@ -27,6 +28,14 @@ public class Node {
 
   public java.util.List<Node> getChildren() {
     return children;
+  }
+
+  public void markReported() {
+    reported = true;
+  }
+
+  public void unmarkReported() {
+    reported = false;
   }
 
   public java.util.List<LineSegment> getLineSegments() {

@@ -1,4 +1,4 @@
- //<>// //<>//
+//<>// //<>//
 //Buttons
 Button readFileButton;
 Button restartButton;
@@ -16,9 +16,14 @@ boolean reportOn = false;
 
 int tempX = 0;
 int tempY = 0;
+int topLeftX = 0;
+int topLeftY = 0;
+int bottomRightX = 0;
+int bottomRightY = 0;
+int clicks = 0;
 boolean justInserted = false;
 
-double highlightTime=5000;
+double highlightTime=3000;
 double startTime = 0;
 
 void setup() {
@@ -61,6 +66,14 @@ void draw() {
     quadTree.animateInsert(tempX, tempY, quadTree.getRoot());
   }
 
+  if (quadTreeInitialized && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime) {
+    quadTree.displayQuadTree(quadTree.getRoot());
+    Rectangle rectReport = new Rectangle(topLeftX, bottomRightX, topLeftY, bottomRightY);
+    quadTree.report(rectReport);
+    quadTree.animateReport(quadTree.getRoot());
+    quadTree.drawSplitRegionReport(rectReport);
+  }
+
   if ((currentTime-startTime) > highlightTime) {
     justInserted = false;
   }
@@ -92,6 +105,22 @@ void mousePressed() {
     startTime= millis();
   }
 
+  if (reportOn) {
+    if (clicks == 2) {
+      clicks = 0;
+    }
+    if (clicks == 0) {
+      topLeftX = mouseX;
+      topLeftY = mouseY;
+    }
+    if (clicks == 1) {
+      bottomRightX = mouseX;
+      bottomRightY = mouseY;
+      startTime= millis();
+    }
+    clicks++;
+  }
+
   // user presses "Restart"
   if (restartButton.mouseOver()) {
     javax.swing.JOptionPane.showMessageDialog(null, "restart Button Pressed ");
@@ -104,8 +133,11 @@ void mousePressed() {
   }
   // user presses "Quit"
   else if (reportButton.mouseOver()) {
-    javax.swing.JOptionPane.showMessageDialog(null, "Quit Button Pressed ");
-    exit();
+    if (reportOn == false) {
+      reportOn = true;
+    } else {
+      reportOn = false;
+    }
   }
   // user presses "Animation"
   else if (animationButton.mouseOver() ) {

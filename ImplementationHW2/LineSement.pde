@@ -4,6 +4,7 @@ class LineSegment {
   private Point rightPoint;
   private int verticalShift;
   private int weight;
+  public boolean reported = false;
   /**
    * I know 'colorObj' is a terrible name, but 
    * it seems like Processing has 'color' as a
@@ -54,6 +55,14 @@ class LineSegment {
 
   public void setColor(Color colorObj) {
     this.colorObj = colorObj;
+  }
+  
+  public void markReported() {
+   reported = true; 
+  }
+  
+  public void unmarkReported() {
+     reported = false; 
   }
 
   @Override

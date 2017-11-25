@@ -18,6 +18,7 @@ class QuadTree {
     root.setRegion(new Rectangle(0, numPixels, 0, numPixels));
     root.setSplitRegion(SplitRegion.WHOLE_GRAPH);
     root.setHeight(0);
+    root.markReported();
     // Regardless of the data, the QuadTree always has four leaf nodes to begin with.
     split(root);
   }
@@ -85,7 +86,8 @@ class QuadTree {
 
   public void report(Rectangle queryDisk) {
     //  resetAllLineSegments(root);
-    report(queryDisk, root);
+    report2(queryDisk, root);
+    traverseHelper(root);
   }
 
   /**
@@ -93,6 +95,7 @@ class QuadTree {
    * So in the draw method you will only have to go through the lineSegments list and it will have the width, and
    * color modified.
    */
+
   public void report(Rectangle queryDisk, Node v) {
     // 1.If v is NULL – return.
     if (v == null) {
@@ -107,7 +110,8 @@ class QuadTree {
     // 3.If R(v) is fully contained in Q –
     // report all points in the subtree
     // rooted at v.
-    if (v.getRegion().isFullyContained(queryDisk)) {
+    if (v.getRegion().containsRect(queryDisk)) {
+      v.markReported();
       changeLineSegments(v);
     }
 
@@ -116,7 +120,40 @@ class QuadTree {
     if (v.isLeaf()) {
       for (LineSegment lineSegment : v.getLineSegments()) {
         if (v.getRegion().doesIntersectWith(lineSegment)) {
-          changeLineSegment(lineSegment);
+          lineSegment.markReported();
+        }
+      }
+    } else {
+      for (Node u : v.getChildren()) {
+        report(queryDisk, u);
+      }
+    }
+    return;
+  }
+  public void report2(Rectangle queryDisk, Node v) {
+    // 1.If v is NULL – return.
+    if (v == null) {
+      return;
+    }
+
+    // 2.If R(v) is disjoint from Q – return
+    if (v.getRegion().isDisjoint(queryDisk)) {
+      return;
+    }
+
+    // 3.If R(v) is fully contained in Q –
+    // report all points in the subtree
+    // rooted at v.
+    if (queryDisk.containsRect(v.getRegion())) {
+      changeLineSegments(v);
+    }
+
+    // 4.If v is a leaf – check each point
+    // in R(v) if inside Q
+    if (v.isLeaf()) {
+      for (LineSegment lineSegment : v.getLineSegments()) {
+        if (queryDisk.doesIntersectWith(lineSegment)) {
+          lineSegment.markReported();
         }
       }
     } else {
@@ -148,6 +185,7 @@ class QuadTree {
   }
 
   public void traverseHelper(Node node) {
+    println("Node reported? = " + node.reported);
     if (!node.isLeaf()) {
       for (Node u : node.getChildren()) {
         traverseHelper(u);
@@ -174,11 +212,13 @@ class QuadTree {
     }
   }
   private void changeLineSegment(LineSegment lineSegment) {
-    lineSegment.setColor(new Color(0, 0, 255));
-    lineSegment.setWeight(8);
+    //  lineSegment.setColor(new Color(0, 0, 255));
+    //  lineSegment.setWeight(8);
+    lineSegment.markReported();
   }
 
   private void changeLineSegments(Node v) {
+    // v.markReported();
     for (LineSegment lineSegment : v.getLineSegments()) {
       changeLineSegment(lineSegment);
     }
@@ -270,6 +310,19 @@ class QuadTree {
     line(node.getRegion().getXMin(), node.getRegion().getYMin(), node.getRegion().getXMin(), node.getRegion().getYMin() + node.getRegion().getHeight());
   }
 
+  public void drawSplitRegionReport(Rectangle rect) {
+    stroke(0, 255, 0);
+    strokeWeight(5);
+    // Draw upper segment of rectangle node
+    line(rect.getXMin(), rect.getYMin(), rect.getXMin() + rect.getWidth(), rect.getYMin());
+    // Draw lower segment of rectangle
+    line(rect.getXMin(), rect.getYMin() + rect.getHeight(), rect.getXMin() + rect.getWidth(), rect.getYMin() + rect.getHeight());
+    // Draw right segment of rectangle
+    line(rect.getXMin() + rect.getWidth(), rect.getYMin(), rect.getXMin() + rect.getWidth(), rect.getYMin() + rect.getHeight());
+    // Draw left segment of rectangle
+    line(rect.getXMin(), rect.getYMin(), rect.getXMin(), rect.getYMin() + rect.getHeight());
+  }
+
 
   public void animateInsert(int x, int y, Node node) {
     if (!node.isLeaf() && node.getRegion().containsPoint(x, y)) {
@@ -282,6 +335,54 @@ class QuadTree {
         drawSplitRegionReport(node);
       }
     }
+    return;
+  }
+
+
+
+  public void animateReport(Rectangle rect, Node node) {
+    if (!node.isLeaf() && !(node.getRegion().isDisjoint(rect))) {
+      drawSplitRegionReport(node);
+      for (Node u : node.getChildren()) {
+        animateReport(rect, u);
+      }
+    } else {
+      if (node.isLeaf() && !(node.getRegion().isDisjoint(rect))) {
+        drawSplitRegionReport(node);
+        java.util.List<LineSegment> segs = node.getLineSegments();
+        stroke(51, 51, 255);
+        strokeWeight(5);
+        for (int i = 0; i < segs.size(); i++) {
+          line(segs.get(i).getLeftPoint().getX(), segs.get(i).getLeftPoint().getY(), segs.get(i).getRightPoint().getX(), segs.get(i).getRightPoint().getY());
+        }
+      }
+    }
+    return;
+  }
+  public void animateReport(Node node) {
+    if (!node.isLeaf()) {
+      if (node.reported) {
+        drawSplitRegionReport(node);
+      }
+      for (Node u : node.getChildren()) {
+        animateReport(u);
+      }
+    } else {
+      if (node.isLeaf()) {
+        if (node.reported) {
+          drawSplitRegionReport(node);
+        }
+        java.util.List<LineSegment> segs = node.getLineSegments();
+        stroke(51, 51, 255);
+        strokeWeight(5);
+        for (int i = 0; i < segs.size(); i++) {
+          if (segs.get(i).reported) {
+            line(segs.get(i).getLeftPoint().getX(), segs.get(i).getLeftPoint().getY(), segs.get(i).getRightPoint().getX(), segs.get(i).getRightPoint().getY());
+          }
+        }
+      }
+    }
+
     return;
   }
 }

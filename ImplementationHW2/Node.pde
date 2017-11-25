@@ -43,7 +43,6 @@ public class Node {
   }
 
   public void addLineSegment(LineSegment lineSegment) {
-    println("Node[ addLineSegment ] (size): "+ lineSegments.size());
     lineSegments.add(lineSegment);
   }
 

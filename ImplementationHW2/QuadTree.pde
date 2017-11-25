@@ -10,6 +10,7 @@ class QuadTree {
   private Node root = new Node();
   private int numberOfNodes = 0;
   private int numberOfSegments = 0;
+  private java.util.Set<LineSegment> segments = new java.util.HashSet<LineSegment>();
 
   QuadTree(int height) {
     this.height = height;
@@ -23,13 +24,17 @@ class QuadTree {
     split(root);
   }
 
+  public java.util.Set<LineSegment> getLineSegments() {
+    return segments;
+  }
+
   public void insert(LineSegment lineSegment) {
     insert(lineSegment, root);
+
     if (!(root.getRegion().isDisjoint(lineSegment))) { 
       numberOfSegments++;
+      segments.add(lineSegment);
     }
-    traverseTree();
-    println("--------------------------------------------");
   }
 
   public void insert(LineSegment lineSegment, Node v) {
@@ -47,7 +52,6 @@ class QuadTree {
     } else {
       v.addLineSegment(lineSegment);
       if (v.shouldSplit()) {
-        System.err.println("QuadTree[ insert ]: we are going to split.");
         split(v);
       }
     }
@@ -87,7 +91,6 @@ class QuadTree {
   public void report(Rectangle queryDisk) {
     unmark(root);
     report(queryDisk, root);
-    //traverseHelper(root);
   }
 
   /**
@@ -357,7 +360,6 @@ class QuadTree {
         }
       }
     }
-
     return;
   }
 }

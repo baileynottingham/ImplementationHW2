@@ -26,6 +26,8 @@ boolean justInserted = false;
 double highlightTime=3000;
 double startTime = 0;
 
+private static final int FILE_ERROR = -1;
+
 void setup() {
   size(512, 630);
   smooth();
@@ -109,9 +111,26 @@ void mousePressed() {
   if (insertOn) {
     tempX = mouseX;
     tempY = mouseY;
-    quadTree.insert(new LineSegment(tempX, tempX, tempY));
+    LineSegment pointToBeInserted = new LineSegment(tempX, tempX, tempY);
+    for (LineSegment line : quadTree.getLineSegments()) {
+      if (line.isPoint()) {
+        if (tempX >= (line.getRightPoint().getX() - 2) &&
+            tempX <= (line.getRightPoint().getX() + 2) &&
+            tempY >= (line.getVerticalShift() - 2) &&
+            tempY <= (line.getVerticalShift()+2)) {
+          System.err.println("[ERR] two points are on each other.");
+          return;
+        }
+      } else {
+        if (pointToBeInserted.isIntersecting(line)) {
+          System.err.println("[ERR] line: " + line + "\t" + "intersects with: " + pointToBeInserted + "(pointToBeInserted)");
+          return;
+        }
+      }
+    }
+    quadTree.insert(pointToBeInserted);
     justInserted = true;
-    startTime= millis();
+    startTime = millis();
   }
 
   if (reportOn && quadTreeInitialized) {
@@ -179,16 +198,23 @@ void mousePressed() {
 } //END mousePressed
 
 void processFile(String fileName) {
+  if (fileName == null || fileName.isEmpty()) {
+    return;
+  }
   int height = parseFileForHeight(fileName);
+  if (height == FILE_ERROR) {
+    System.err.println("[ERR] error reading file.");
+    return;
+  }
   quadTree = new QuadTree(height);
-  // quadTree.traverseTree();
-  parseFileForLineSegments(fileName);
-  println("Number of line segments: "+ lineSegments.size());
-
+  int rtnCode = parseFileForLineSegments(fileName);
+  if (rtnCode == FILE_ERROR) {
+    System.err.println("[ERR] error reading file.");
+    return;
+  }
   for (LineSegment lineSegment : lineSegments) {
     quadTree.insert(lineSegment);
   }
-  quadTree.traverseTree();
   quadTreeInitialized = true;
 }
 
@@ -200,11 +226,11 @@ int parseFileForHeight(String filename) {
     return height;
   } 
   catch (Exception e) {
+    return FILE_ERROR;
   }
-  return -1;
 }
 
-void parseFileForLineSegments(String filename) {
+int parseFileForLineSegments(String filename) {
   BufferedReader reader;
   String line = null;
   reader = createReader(filename);
@@ -229,8 +255,9 @@ void parseFileForLineSegments(String filename) {
   }
   catch (Exception e) {
     System.err.println("Error occured when parsing " + filename + ". Error msg: " + e.getMessage());
+    return FILE_ERROR;
   }
-  return;
+  return 1;
 }
 
 /*******************************************************************************

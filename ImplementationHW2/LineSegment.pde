@@ -64,4 +64,24 @@ class LineSegment {
     public String toString() {
     return getLeftPoint().toString() + " " + getRightPoint();
   }
+
+  public boolean isIntersecting(LineSegment other) {
+    if (!(this.getVerticalShift() <= other.getVerticalShift() + 2 && this.getVerticalShift() >= other.getVerticalShift() - 2)) {
+      return false;
+    }
+    int avgY = (this.getVerticalShift() + other.getVerticalShift()) / 2;
+    java.awt.geom.Line2D thisLine = new java.awt.geom.Line2D.Double((double)this.getLeftPoint().getX(),
+                                                                    (double)avgY,
+                                                                    (double)this.getRightPoint().getX(),
+                                                                    (double)avgY);
+    java.awt.geom.Line2D otherLine = new java.awt.geom.Line2D.Double((double)other.getLeftPoint().getX(),
+                                                                     (double)avgY,
+                                                                     (double)other.getRightPoint().getX(),
+                                                                     (double)avgY);
+    return thisLine.intersectsLine(otherLine);
+  }
+
+  public boolean isPoint() {
+    return getLeftPoint().getX() == getRightPoint().getX();
+  }
 }

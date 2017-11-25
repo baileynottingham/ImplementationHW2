@@ -67,11 +67,19 @@ void draw() {
     quadTree.animateInsert(tempX, tempY, quadTree.getRoot());
   }
 
-  if (quadTreeInitialized && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime) {
+  if (quadTreeInitialized && animationOn && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime) {
     quadTree.displayQuadTree(quadTree.getRoot());
     Rectangle rectReport = new Rectangle(topLeftX, bottomRightX, topLeftY, bottomRightY);
     quadTree.report(rectReport);
     quadTree.animateReport(quadTree.getRoot());
+    quadTree.drawSplitRegionReport(rectReport);
+  }
+
+  if (quadTreeInitialized && animationOn == false && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime) {
+    quadTree.displayQuadTree(quadTree.getRoot());
+    Rectangle rectReport = new Rectangle(topLeftX, bottomRightX, topLeftY, bottomRightY);
+    quadTree.report(rectReport);
+    quadTree.animateReportNoAnimation(quadTree.getRoot());
     quadTree.drawSplitRegionReport(rectReport);
   }
 
@@ -106,18 +114,27 @@ void mousePressed() {
     startTime= millis();
   }
 
-  if (reportOn) {
+  if (reportOn && quadTreeInitialized) {
     if (clicks == 2) {
       clicks = 0;
     }
     if (clicks == 0) {
       topLeftX = mouseX;
       topLeftY = mouseY;
+      if (quadTree.getRoot().getRegion().containsPoint(topLeftX, topLeftY)) {
+        javax.swing.JOptionPane.showMessageDialog(null, "Top left corner selected. Click where you want the bottom right corner of the query region to be.");
+      } else {
+        clicks--;
+      }
     }
     if (clicks == 1) {
       bottomRightX = mouseX;
       bottomRightY = mouseY;
-      startTime= millis();
+      if (quadTree.getRoot().getRegion().containsPoint(bottomRightX, bottomRightY)) {
+        startTime= millis();
+      } else {
+        clicks--;
+      }
     }
     clicks++;
   }
@@ -127,21 +144,23 @@ void mousePressed() {
     javax.swing.JOptionPane.showMessageDialog(null, "restart Button Pressed ");
     restart();
   }
-  // user presses "Read File" or "Read New File"
+  // user presses "Read File"
   else if (readFileButton.mouseOver()) {
     String fileName = javax.swing.JOptionPane.showInputDialog( null, "File Name", "" );
     processFile( fileName );
   }
-  // user presses "Quit"
+  // user presses "Report"
   else if (reportButton.mouseOver()) {
     if (reportOn == false) {
       reportOn = true;
+      insertOn = false;
+      javax.swing.JOptionPane.showMessageDialog(null, "You are now in report mode. Click where you want the top left corner of query region to be.");
     } else {
       reportOn = false;
     }
   }
   // user presses "Animation"
-  else if (animationButton.mouseOver() ) {
+  else if (animationButton.mouseOver() && quadTreeInitialized) {
     if (animationOn == false) {
       animationOn = true;
     } else {
@@ -149,9 +168,10 @@ void mousePressed() {
     }
   }
   // user presses "Insert"
-  else if (insertButton.mouseOver()) {
+  else if (insertButton.mouseOver() && quadTreeInitialized) {
     if (insertOn == false) {
       insertOn = true;
+      reportOn = false;
     } else {
       insertOn = false;
     }

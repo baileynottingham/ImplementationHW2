@@ -339,4 +339,25 @@ class QuadTree {
 
     return;
   }
+  
+    public void animateReportNoAnimation(Node node) {
+    if (!node.isLeaf()) {
+      for (Node u : node.getChildren()) {
+        animateReportNoAnimation(u);
+      }
+    } else {
+      if (node.isLeaf()) {
+        java.util.List<LineSegment> segs = node.getLineSegments();
+        stroke(51, 51, 255);
+        strokeWeight(5);
+        for (int i = 0; i < segs.size(); i++) {
+          if (segs.get(i).reported) {
+            line(segs.get(i).getLeftPoint().getX(), segs.get(i).getLeftPoint().getY(), segs.get(i).getRightPoint().getX(), segs.get(i).getRightPoint().getY());
+          }
+        }
+      }
+    }
+
+    return;
+  }
 }

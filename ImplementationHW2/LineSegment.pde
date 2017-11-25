@@ -3,7 +3,6 @@ class LineSegment {
   private Point leftPoint;
   private Point rightPoint;
   private int verticalShift;
-  private int weight;
   public boolean reported = false;
   /**
    * I know 'colorObj' is a terrible name, but 
@@ -18,7 +17,6 @@ class LineSegment {
     leftPoint = new Point(Math.min(x1, x2), y);
     rightPoint = new Point(Math.max(x1, x2), y);
     verticalShift = y;
-    weight = 4;
     colorObj = new Color(0, 0, 0);
   }
 
@@ -37,9 +35,6 @@ class LineSegment {
     return width;
   }
 
-  public void setWeight(int w) {
-    this.weight = w;
-  }
 
   /**
    * Don't actually try to use the color object when drawing,
@@ -56,17 +51,17 @@ class LineSegment {
   public void setColor(Color colorObj) {
     this.colorObj = colorObj;
   }
-  
+
   public void markReported() {
-   reported = true; 
+    reported = true;
   }
-  
+
   public void unmarkReported() {
-     reported = false; 
+    reported = false;
   }
 
   @Override
-  public String toString() {
+    public String toString() {
     return getLeftPoint().toString() + " " + getRightPoint();
   }
 }

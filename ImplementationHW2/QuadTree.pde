@@ -339,8 +339,8 @@ class QuadTree {
 
     return;
   }
-  
-    public void animateReportNoAnimation(Node node) {
+
+  public void animateReportNoAnimation(Node node) {
     if (!node.isLeaf()) {
       for (Node u : node.getChildren()) {
         animateReportNoAnimation(u);

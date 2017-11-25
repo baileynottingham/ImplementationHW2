@@ -1,4 +1,4 @@
-/** //<>// //<>//
+/* //<>//
  * Maintains a pointer to the root, and has the responsibility
  * to add line segments to its children, and query itself.
  * @author Bailey Nottingham
@@ -186,16 +186,6 @@ class QuadTree {
     return;
   }
 
-  private void resetAllLineSegments(Node v) {
-    for (LineSegment lineSegment : v.getLineSegments()) {
-      lineSegment.getColor().setBlack();
-      lineSegment.setWeight(4);
-    }
-    if (!v.isLeaf()) {
-      for (Node u : v.getChildren())
-        resetAllLineSegments(u);
-    }
-  }
   private void changeLineSegment(LineSegment lineSegment) {
     //  lineSegment.setColor(new Color(0, 0, 255));
     //  lineSegment.setWeight(8);
@@ -323,27 +313,6 @@ class QuadTree {
     return;
   }
 
-
-
-  public void animateReport(Rectangle rect, Node node) {
-    if (!node.isLeaf() && !(node.getRegion().isDisjoint(rect))) {
-      drawSplitRegionReport(node);
-      for (Node u : node.getChildren()) {
-        animateReport(rect, u);
-      }
-    } else {
-      if (node.isLeaf() && !(node.getRegion().isDisjoint(rect))) {
-        drawSplitRegionReport(node);
-        java.util.List<LineSegment> segs = node.getLineSegments();
-        stroke(51, 51, 255);
-        strokeWeight(5);
-        for (int i = 0; i < segs.size(); i++) {
-          line(segs.get(i).getLeftPoint().getX(), segs.get(i).getLeftPoint().getY(), segs.get(i).getRightPoint().getX(), segs.get(i).getRightPoint().getY());
-        }
-      }
-    }
-    return;
-  }
   public void animateReport(Node node) {
     if (!node.isLeaf()) {
       if (node.reported) {

@@ -41,6 +41,7 @@ void setup() {
 
 
 void draw() {
+  clear();
   smooth();
   stroke(0, 0, 0);
   strokeWeight(1);

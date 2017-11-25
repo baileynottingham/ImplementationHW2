@@ -85,9 +85,9 @@ class QuadTree {
   }
 
   public void report(Rectangle queryDisk) {
-    //  resetAllLineSegments(root);
-    report2(queryDisk, root);
-    traverseHelper(root);
+    unmark(root);
+    report(queryDisk, root);
+    //traverseHelper(root);
   }
 
   /**
@@ -95,7 +95,6 @@ class QuadTree {
    * So in the draw method you will only have to go through the lineSegments list and it will have the width, and
    * color modified.
    */
-
   public void report(Rectangle queryDisk, Node v) {
     // 1.If v is NULL – return.
     if (v == null) {
@@ -110,42 +109,13 @@ class QuadTree {
     // 3.If R(v) is fully contained in Q –
     // report all points in the subtree
     // rooted at v.
-    if (v.getRegion().containsRect(queryDisk)) {
+    if (queryDisk.containsRect(v.getRegion())) {
       v.markReported();
       changeLineSegments(v);
     }
 
-    // 4.If v is a leaf – check each point
-    // in R(v) if inside Q
-    if (v.isLeaf()) {
-      for (LineSegment lineSegment : v.getLineSegments()) {
-        if (v.getRegion().doesIntersectWith(lineSegment)) {
-          lineSegment.markReported();
-        }
-      }
-    } else {
-      for (Node u : v.getChildren()) {
-        report(queryDisk, u);
-      }
-    }
-    return;
-  }
-  public void report2(Rectangle queryDisk, Node v) {
-    // 1.If v is NULL – return.
-    if (v == null) {
-      return;
-    }
-
-    // 2.If R(v) is disjoint from Q – return
-    if (v.getRegion().isDisjoint(queryDisk)) {
-      return;
-    }
-
-    // 3.If R(v) is fully contained in Q –
-    // report all points in the subtree
-    // rooted at v.
-    if (queryDisk.containsRect(v.getRegion())) {
-      changeLineSegments(v);
+    if (v.getRegion().containsRect(queryDisk) || !(v.getRegion().isDisjoint(queryDisk))) {
+      v.markReported();
     }
 
     // 4.If v is a leaf – check each point
@@ -197,6 +167,21 @@ class QuadTree {
         print(lineSegment + ", ");
       }
       println("]");
+    }
+    return;
+  }
+
+  public void unmark(Node node) {
+    if (!node.isLeaf()) {
+      node.unmarkReported();
+      for (Node u : node.getChildren()) {
+        unmark(u);
+      }
+    } else {
+      node.unmarkReported();
+      for (LineSegment lineSegment : node.getLineSegments()) {
+        lineSegment.unmarkReported();
+      }
     }
     return;
   }

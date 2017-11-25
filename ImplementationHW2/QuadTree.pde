@@ -12,6 +12,10 @@ class QuadTree {
   private int numberOfSegments = 0;
   private java.util.Set<LineSegment> segments = new java.util.HashSet<LineSegment>();
 
+  /**
+   * Sets up an empty Quad Tree with a given height as a parameter.
+   * Then does the initial splitting of the four regions.
+   */
   QuadTree(int height) {
     this.height = height;
     root.setRegion(new Rectangle(0, (int) java.lang.Math.pow(2, height), 0, (int) java.lang.Math.pow(2, height)));
@@ -24,10 +28,16 @@ class QuadTree {
     split(root);
   }
 
+  /**
+   * @returns The current line segments in the Quad Tree.
+   */
   public java.util.Set<LineSegment> getLineSegments() {
     return segments;
   }
 
+  /**
+   * Inserts the a new line segment.
+   */
   public void insert(LineSegment lineSegment) {
     insert(lineSegment, root);
 
@@ -37,6 +47,9 @@ class QuadTree {
     }
   }
 
+  /**
+   * The recursive steps to insert a new line segment into the Quad Tree.
+   */
   public void insert(LineSegment lineSegment, Node v) {
     if (v == null) {
       System.err.println("QuadTree[ insert ] v is null. This shouldn't happen.");
@@ -57,13 +70,22 @@ class QuadTree {
     }
   }
 
+  /**
+   * Takes in the node that needs to be split into four new regions to distribute the data.
+   * Creates four new nodes that represent North-East, North-West, South-East, and South-West.
+   * Then distributes the four line segments into the respecitve regions.
+   */
   public void split(Node v) {
     if (v.getHeight() >= this.height) {
       System.err.println("Can not split anymore becuase we have reached the max height");
+      System.err.println("Going to delete the line segment that was just inserted, because it doesn't fit.");
       // delete the line segment that we just added because we have reached the maximum split level.
-      v.getLineSegments().remove(v.getLineSegments().size() - 1);
+      if (v.getLineSegments().size() >= 1) {
+        v.getLineSegments().remove(v.getLineSegments().size() - 1);
+      }
       return;
     }
+
     int xmin = v.getRegion().getXMin();
     int ymin = v.getRegion().getYMin();
 
@@ -87,7 +109,9 @@ class QuadTree {
       }
     }
   }
-
+  /**
+   * Mark all of the nodes in the query region in O(h) time.
+   */
   public void report(Rectangle queryDisk) {
     unmark(root);
     report(queryDisk, root);
@@ -173,7 +197,10 @@ class QuadTree {
     }
     return;
   }
-
+  /**
+   * Animation helper method.
+   * Will traverse through all of the nodes and 'unmark' the nodes.
+   */
   public void unmark(Node node) {
     if (!node.isLeaf()) {
       node.unmarkReported();
@@ -188,15 +215,19 @@ class QuadTree {
     }
     return;
   }
-
+  /**
+   * Animation helper method.
+   * Will mark the line segment as reported.
+   */
   private void changeLineSegment(LineSegment lineSegment) {
-    //  lineSegment.setColor(new Color(0, 0, 255));
-    //  lineSegment.setWeight(8);
     lineSegment.markReported();
   }
-
+  /**
+   * Animation helper method.
+   * Will traverse through all of the line segments in this node's region
+   * and mark them.
+   */
   private void changeLineSegments(Node v) {
-    // v.markReported();
     for (LineSegment lineSegment : v.getLineSegments()) {
       changeLineSegment(lineSegment);
     }
@@ -300,7 +331,6 @@ class QuadTree {
     // Draw left segment of rectangle
     line(rect.getXMin(), rect.getYMin(), rect.getXMin(), rect.getYMin() + rect.getHeight());
   }
-
 
   public void animateInsert(int x, int y, Node node) {
     if (!node.isLeaf() && node.getRegion().containsPoint(x, y)) {

@@ -64,6 +64,7 @@ void draw() {
   if (quadTreeInitialized && (currentTime-startTime) > highlightTime || animationOn == false) {
     quadTree.displayQuadTree(quadTree.getRoot());
   }
+
   if (quadTreeInitialized && animationOn && justInserted && (currentTime-startTime) <= highlightTime) {
     quadTree.displayQuadTree(quadTree.getRoot());
     quadTree.animateInsert(tempX, tempY, quadTree.getRoot());
@@ -88,6 +89,7 @@ void draw() {
   if ((currentTime-startTime) > highlightTime) {
     justInserted = false;
   }
+
   flush();
 } //END draw
 
@@ -117,7 +119,7 @@ void mousePressed() {
         if (tempX >= (line.getRightPoint().getX() - 2) &&
             tempX <= (line.getRightPoint().getX() + 2) &&
             tempY >= (line.getVerticalShift() - 2) &&
-            tempY <= (line.getVerticalShift()+2)) {
+            tempY <= (line.getVerticalShift() + 2)) {
           System.err.println("[ERR] two points are on each other.");
           return;
         }
@@ -128,6 +130,7 @@ void mousePressed() {
         }
       }
     }
+
     quadTree.insert(pointToBeInserted);
     justInserted = true;
     startTime = millis();
@@ -137,6 +140,7 @@ void mousePressed() {
     if (clicks == 2) {
       clicks = 0;
     }
+
     if (clicks == 0) {
       topLeftX = mouseX;
       topLeftY = mouseY;
@@ -146,6 +150,7 @@ void mousePressed() {
         clicks--;
       }
     }
+
     if (clicks == 1) {
       bottomRightX = mouseX;
       bottomRightY = mouseY;
@@ -162,14 +167,10 @@ void mousePressed() {
   if (restartButton.mouseOver()) {
     javax.swing.JOptionPane.showMessageDialog(null, "restart Button Pressed ");
     restart();
-  }
-  // user presses "Read File"
-  else if (readFileButton.mouseOver()) {
+  } else if (readFileButton.mouseOver()) { // user presses "Read File"
     String fileName = javax.swing.JOptionPane.showInputDialog( null, "File Name", "" );
     processFile( fileName );
-  }
-  // user presses "Report"
-  else if (reportButton.mouseOver()) {
+  } else if (reportButton.mouseOver()) { // user presses "Report"
     if (reportOn == false) {
       reportOn = true;
       insertOn = false;
@@ -177,23 +178,21 @@ void mousePressed() {
     } else {
       reportOn = false;
     }
-  }
-  // user presses "Animation"
-  else if (animationButton.mouseOver() && quadTreeInitialized) {
+  } else if (animationButton.mouseOver() && quadTreeInitialized) { // user presses "Animation"
     if (animationOn == false) {
       animationOn = true;
     } else {
       animationOn = false;
     }
-  }
-  // user presses "Insert"
-  else if (insertButton.mouseOver() && quadTreeInitialized) {
+  } else if (insertButton.mouseOver() && quadTreeInitialized) { // user presses "Insert"
     if (insertOn == false) {
       insertOn = true;
       reportOn = false;
     } else {
       insertOn = false;
     }
+  } else {
+    // ignore.
   }
 } //END mousePressed
 
@@ -201,11 +200,14 @@ void processFile(String fileName) {
   if (fileName == null || fileName.isEmpty()) {
     return;
   }
+
   int height = parseFileForHeight(fileName);
+
   if (height == FILE_ERROR) {
     System.err.println("[ERR] error reading file.");
     return;
   }
+
   quadTree = new QuadTree(height);
   int rtnCode = parseFileForLineSegments(fileName);
   if (rtnCode == FILE_ERROR) {
@@ -224,8 +226,7 @@ int parseFileForHeight(String filename) {
     int height = Integer.parseInt(reader.readLine());
     reader.close();
     return height;
-  } 
-  catch (Exception e) {
+  } catch (Exception e) {
     return FILE_ERROR;
   }
 }
@@ -252,8 +253,7 @@ int parseFileForLineSegments(String filename) {
       lineSegments.add(new LineSegment(x1, x2, y));
     }
     reader.close();
-  }
-  catch (Exception e) {
+  } catch (Exception e) {
     System.err.println("Error occured when parsing " + filename + ". Error msg: " + e.getMessage());
     return FILE_ERROR;
   }

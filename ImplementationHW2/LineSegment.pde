@@ -62,7 +62,7 @@ class LineSegment {
 
   @Override
     public String toString() {
-    return getLeftPoint().toString() + " " + getRightPoint();
+    return getLeftPoint().toString() + "\t" + getRightPoint();
   }
 
   public boolean isIntersecting(LineSegment other) {

@@ -6,13 +6,17 @@ Button insertButton;
 Button animationButton;
 Button reportButton;
 Button partyButton;
+
 QuadTree quadTree = null;
-java.util.List<LineSegment> lineSegments = new ArrayList<LineSegment>();
+java.util.List<LineSegment> lineSegments = new java.util.ArrayList<LineSegment>();
+java.util.List<String> errorMessages = new java.util.ArrayList<String>();
+private String fileName;
 
 boolean quadTreeInitialized = false;
 boolean animationOn = true;
 boolean insertOn = false;
 boolean reportOn = false;
+boolean partyMode = false;
 
 int tempX = 0;
 int tempY = 0;
@@ -29,7 +33,7 @@ double startTime = 0;
 private static final int FILE_ERROR = -1;
 
 void setup() {
-  size(512, 630);
+  size(620, 630);
   smooth();
   textSize(16);
 
@@ -39,19 +43,45 @@ void setup() {
   animationButton = new Button("Animation", 210, 520, 90, 35);
   insertButton = new Button("Insert", 320, 520, 80, 35);
   reportButton = new Button("Report", 420, 520, 80, 35);
+  partyButton = new Button("Party", 520, 520, 80, 35);
+  prepareExitHandler();
 } //END setup
 
-
+private void prepareExitHandler() {
+  Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+    public void run () {
+      if (fileName == null) {
+        return;
+      }
+      String fileNames[] = fileName.split( ".in" );
+      String outputFile = fileNames[ 0 ] + ".out";
+      PrintWriter output = createWriter( outputFile );
+      output.println("======================================= Line Segments Report =======================================");
+      for (LineSegment line : quadTree.getLineSegments()) {
+        output.println(line);
+      }
+      output.println("======================================= Line Segments Report =======================================");
+      output.println("=========================================== Error Report ===========================================");
+      for (String errMsg : errorMessages) {
+        output.println(errMsg);
+      }
+      output.println("=========================================== Error Report ===========================================");
+      output.flush();
+      output.close();
+    }
+  }
+  ));
+}
 void draw() {
   clear();
   smooth();
   stroke(0, 0, 0);
   strokeWeight(1);
   fill(256, 256, 256);
-  rect(0, 0, 512, 512);
+  rect(0, 0, 620, 512);
 
   fill(102, 255, 178);
-  rect(0, 512, 512, 188);
+  rect(0, 512, 620, 188);
   fill(256, 256, 256);
   drawButtons();
   fill(256, 256, 256);
@@ -62,16 +92,16 @@ void draw() {
 
   double currentTime= millis();
   if (quadTreeInitialized && (currentTime-startTime) > highlightTime || animationOn == false) {
-    quadTree.displayQuadTree(quadTree.getRoot());
+    quadTree.displayQuadTree(quadTree.getRoot(), partyMode);
   }
 
   if (quadTreeInitialized && animationOn && justInserted && (currentTime-startTime) <= highlightTime) {
-    quadTree.displayQuadTree(quadTree.getRoot());
+    quadTree.displayQuadTree(quadTree.getRoot(), partyMode);
     quadTree.animateInsert(tempX, tempY, quadTree.getRoot());
   }
 
   if (quadTreeInitialized && animationOn && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime) {
-    quadTree.displayQuadTree(quadTree.getRoot());
+    quadTree.displayQuadTree(quadTree.getRoot(), partyMode);
     Rectangle rectReport = new Rectangle(topLeftX, bottomRightX, topLeftY, bottomRightY);
     quadTree.report(rectReport);
     quadTree.animateReport(quadTree.getRoot());
@@ -79,7 +109,7 @@ void draw() {
   }
 
   if (quadTreeInitialized && animationOn == false && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime) {
-    quadTree.displayQuadTree(quadTree.getRoot());
+    quadTree.displayQuadTree(quadTree.getRoot(), partyMode);
     Rectangle rectReport = new Rectangle(topLeftX, bottomRightX, topLeftY, bottomRightY);
     quadTree.report(rectReport);
     quadTree.animateReportNoAnimation(quadTree.getRoot());
@@ -117,15 +147,17 @@ void mousePressed() {
     for (LineSegment line : quadTree.getLineSegments()) {
       if (line.isPoint()) {
         if (tempX >= (line.getRightPoint().getX() - 2) &&
-            tempX <= (line.getRightPoint().getX() + 2) &&
-            tempY >= (line.getVerticalShift() - 2) &&
-            tempY <= (line.getVerticalShift() + 2)) {
+          tempX <= (line.getRightPoint().getX() + 2) &&
+          tempY >= (line.getVerticalShift() - 2) &&
+          tempY <= (line.getVerticalShift() + 2)) {
           System.err.println("[ERR] two points are on each other.");
+          errorMessages.add("[ERR] two points are on each other.");
           return;
         }
       } else {
         if (pointToBeInserted.isIntersecting(line)) {
           System.err.println("[ERR] line: " + line + "\t" + "intersects with: " + pointToBeInserted + "(pointToBeInserted)");
+          errorMessages.add("[ERR] line: " + line + "\t" + "intersects with: " + pointToBeInserted + "(pointToBeInserted)");
           return;
         }
       }
@@ -191,8 +223,8 @@ void mousePressed() {
     } else {
       insertOn = false;
     }
-  } else {
-    // ignore.
+  } else if (partyButton.mouseOver()) {
+    partyMode = !partyMode;
   }
 } //END mousePressed
 
@@ -200,24 +232,27 @@ void processFile(String fileName) {
   if (fileName == null || fileName.isEmpty()) {
     return;
   }
-
-  int height = parseFileForHeight(fileName);
+  this.fileName = fileName;
+  int height = parseFileForHeight(this.fileName);
 
   if (height == FILE_ERROR) {
     System.err.println("[ERR] error reading file.");
+    errorMessages.add("[ERR] error reading file.");
     return;
   }
 
   quadTree = new QuadTree(height);
-  int rtnCode = parseFileForLineSegments(fileName);
+  int rtnCode = parseFileForLineSegments(this.fileName);
   if (rtnCode == FILE_ERROR) {
     System.err.println("[ERR] error reading file.");
+    errorMessages.add("[ERR] error reading file.");
     return;
   }
   for (LineSegment lineSegment : lineSegments) {
     quadTree.insert(lineSegment);
   }
   quadTreeInitialized = true;
+  quadTree.setErrorMessages(errorMessages);
 }
 
 int parseFileForHeight(String filename) {
@@ -226,7 +261,8 @@ int parseFileForHeight(String filename) {
     int height = Integer.parseInt(reader.readLine());
     reader.close();
     return height;
-  } catch (Exception e) {
+  } 
+  catch (Exception e) {
     return FILE_ERROR;
   }
 }
@@ -245,6 +281,7 @@ int parseFileForLineSegments(String filename) {
       String[] ints = line.split(",");
       if (ints.length != 3) {
         System.err.println("Excpeted 3 integers.");
+        errorMessages.add("Excpeted 3 integers.");
         continue;
       }
       int x1 = Integer.parseInt(ints[0].trim());
@@ -253,8 +290,10 @@ int parseFileForLineSegments(String filename) {
       lineSegments.add(new LineSegment(x1, x2, y));
     }
     reader.close();
-  } catch (Exception e) {
+  } 
+  catch (Exception e) {
     System.err.println("Error occured when parsing " + filename + ". Error msg: " + e.getMessage());
+    errorMessages.add("Error occured when parsing " + filename + ". Error msg: " + e.getMessage());
     return FILE_ERROR;
   }
   return 1;
@@ -272,6 +311,7 @@ void drawButtons() {
   animationButton.drawButton();
   insertButton.drawButton();
   reportButton.drawButton();
+  partyButton.drawButton();
 }
 
 void displayBottomText() {
@@ -301,4 +341,6 @@ void displayBottomText() {
     text("Number of Nodes = 0", 280, 585, width, height);
     text("Number of Segments = 0", 280, 565, width, height);
   }
+  String party = (partyMode) ? "ON" : "OFF";
+  text("Party Mode = " + party, 280, 605);
 }

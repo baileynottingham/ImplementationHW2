@@ -6,21 +6,14 @@
  */
 public class Node {
 
-  public java.util.List<Node> children;
+  public java.util.List<Node> children = new ArrayList<Node>();
   private Rectangle region;
-  public java.util.List<LineSegment> lineSegments;
+  public java.util.List<LineSegment> lineSegments = new ArrayList<LineSegment>();
   private SplitRegion splitRegion;
   private int height;
   public boolean reported = false;
 
-  public Node() {
-    region = null;
-    children = new ArrayList<Node>();
-    lineSegments = new ArrayList<LineSegment>();
-  }
-
   public Node(Rectangle region, SplitRegion splitRegion, int height) {
-    this();
     this.region = region;
     this.splitRegion = splitRegion;
     this.height = height;

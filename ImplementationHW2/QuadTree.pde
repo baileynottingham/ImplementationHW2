@@ -7,10 +7,12 @@
 class QuadTree {
 
   private int height = 0;
-  private Node root = new Node();
+  private Node root;
   private int numberOfNodes = 0;
   private int numberOfSegments = 0;
   private java.util.Set<LineSegment> segments = new java.util.HashSet<LineSegment>();
+  private int partyModeCounter = 0;
+  private java.util.List<String> errorMessages = new java.util.ArrayList<String>();
 
   /**
    * Sets up an empty Quad Tree with a given height as a parameter.
@@ -18,13 +20,9 @@ class QuadTree {
    */
   QuadTree(int height) {
     this.height = height;
-    root.setRegion(new Rectangle(0, (int) java.lang.Math.pow(2, height), 0, (int) java.lang.Math.pow(2, height)));
     int numPixels = (int) java.lang.Math.pow(2, height);
-    root.setRegion(new Rectangle(0, numPixels, 0, numPixels));
-    root.setSplitRegion(SplitRegion.WHOLE_GRAPH);
-    root.setHeight(0);
+    root = new Node(new Rectangle(0, numPixels, 0, numPixels), SplitRegion.WHOLE_GRAPH, 0);
     root.markReported();
-    // Regardless of the data, the QuadTree always has four leaf nodes to begin with.
     split(root);
   }
 
@@ -53,6 +51,7 @@ class QuadTree {
   public void insert(LineSegment lineSegment, Node v) {
     if (v == null) {
       System.err.println("QuadTree[ insert ] v is null. This shouldn't happen.");
+      errorMessages.add("QuadTree[ insert ] v is null. This shouldn't happen.");
       return;
     }
     if ((v.getRegion().isDisjoint(lineSegment))) {
@@ -271,18 +270,26 @@ class QuadTree {
     }
   }
 
-  public void displayQuadTree(Node node) {
+  public void displayQuadTree(Node node, boolean partyMode) {
     if (!node.isLeaf()) {
       drawSplitRegion(node);
       flush();
       for (Node u : node.getChildren()) {
-        displayQuadTree(u);
+        displayQuadTree(u, partyMode);
       }
     } else {
       java.util.List<LineSegment> segs = node.getLineSegments();
       strokeWeight(3);
-      stroke(51, 51, 255);
       for (int i = 0; i < segs.size(); i++) {
+        if (partyMode && partyModeCounter++ % 60 == 0) {
+          java.util.Random random_color = new java.util.Random();
+          int r = random_color.nextInt(256);
+          int g = random_color.nextInt(256);
+          int b = random_color.nextInt(256);
+          stroke(r, g, b);
+        } else {
+          stroke(51, 51, 255);
+        }
         line(segs.get(i).getLeftPoint().getX(), segs.get(i).getLeftPoint().getY(), segs.get(i).getRightPoint().getX(), segs.get(i).getRightPoint().getY());
       }
       flush();
@@ -391,5 +398,9 @@ class QuadTree {
       }
     }
     return;
+  }
+
+  public void setErrorMessages(java.util.List<String> errorMessages) {
+    this.errorMessages = errorMessages;
   }
 }

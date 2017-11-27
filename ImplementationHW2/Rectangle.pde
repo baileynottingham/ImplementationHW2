@@ -71,7 +71,7 @@ class Rectangle {
    * Determines if the line intersects with this region.
    */
   public boolean doesIntersectWith(LineSegment lineSegment) {
-    java.awt.Rectangle rect = new java.awt.Rectangle(xmin, ymin, width, height);
+    java.awt.Rectangle rect = new java.awt.Rectangle(this.xmin, this.ymin, this.width, this.height);
     java.awt.geom.Line2D line = new java.awt.geom.Line2D.Double(
       (double)lineSegment.getLeftPoint().getX(), 
       (double)lineSegment.getVerticalShift(), 
@@ -84,7 +84,7 @@ class Rectangle {
    * Checks that the line doesn't lay on this region.
    */
   public boolean isDisjoint(LineSegment lineSegment) {
-    java.awt.Rectangle rect = new java.awt.Rectangle(xmin, ymin, width, height);
+    java.awt.Rectangle rect = new java.awt.Rectangle(this.xmin, this.ymin, this.width, this.height);
     java.awt.geom.Line2D line = new java.awt.geom.Line2D.Double(
       (double)lineSegment.getLeftPoint().getX(), 
       (double)lineSegment.getVerticalShift(), 

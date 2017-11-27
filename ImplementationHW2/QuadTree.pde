@@ -1,4 +1,4 @@
-/* //<>// //<>//
+/*
  * Maintains a pointer to the root, and has the responsibility
  * to add line segments to its children, and query itself.
  * @author Bailey Nottingham

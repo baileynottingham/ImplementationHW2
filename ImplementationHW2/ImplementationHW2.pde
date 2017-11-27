@@ -1,4 +1,3 @@
- //<>// //<>//
 //Buttons
 Button readFileButton;
 Button partyButton;

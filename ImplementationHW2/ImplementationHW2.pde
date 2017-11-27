@@ -1,11 +1,10 @@
-//<>// //<>//
+//<>// //<>// //<>//
 //Buttons
 Button readFileButton;
-Button restartButton;
+Button partyButton;
 Button insertButton;
 Button animationButton;
 Button reportButton;
-Button partyButton;
 
 QuadTree quadTree = null;
 java.util.List<LineSegment> lineSegments = new java.util.ArrayList<LineSegment>();
@@ -29,22 +28,31 @@ boolean justInserted = false;
 
 double highlightTime=3000;
 double startTime = 0;
+double startTimeParty = 0;
+
+Firework[] fs = new Firework[10];
+boolean once;
 
 private static final int FILE_ERROR = -1;
 
 void setup() {
-  size(620, 630);
+  size(512, 630);
   smooth();
   textSize(16);
 
   //Create Clickable Buttons
-  restartButton = new Button("Restart", 10, 520, 80, 35);
+  partyButton = new Button("Party", 10, 520, 80, 35);
   readFileButton = new Button("Read File", 110, 520, 80, 35);
   animationButton = new Button("Animation", 210, 520, 90, 35);
   insertButton = new Button("Insert", 320, 520, 80, 35);
   reportButton = new Button("Report", 420, 520, 80, 35);
-  partyButton = new Button("Party", 520, 520, 80, 35);
+  //  partyButton = new Button("Party", 520, 520, 80, 35);
   prepareExitHandler();
+
+  smooth();
+  for (int i = 0; i < fs.length; i++) {
+    fs[i] = new Firework();
+  }
 } //END setup
 
 private void prepareExitHandler() {
@@ -100,7 +108,7 @@ void draw() {
     quadTree.animateInsert(tempX, tempY, quadTree.getRoot());
   }
 
-  if (quadTreeInitialized && animationOn && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime) {
+  if (quadTreeInitialized && animationOn && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime && !partyMode) {
     quadTree.displayQuadTree(quadTree.getRoot(), partyMode);
     Rectangle rectReport = new Rectangle(topLeftX, bottomRightX, topLeftY, bottomRightY);
     quadTree.report(rectReport);
@@ -108,7 +116,7 @@ void draw() {
     quadTree.drawSplitRegionReport(rectReport);
   }
 
-  if (quadTreeInitialized && animationOn == false && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime) {
+  if (quadTreeInitialized && animationOn == false && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime && !partyMode) {
     quadTree.displayQuadTree(quadTree.getRoot(), partyMode);
     Rectangle rectReport = new Rectangle(topLeftX, bottomRightX, topLeftY, bottomRightY);
     quadTree.report(rectReport);
@@ -120,7 +128,32 @@ void draw() {
     justInserted = false;
   }
 
-  flush();
+  if (quadTreeInitialized && partyMode) {
+    java.util.Random random_color = new java.util.Random();
+    int r = random_color.nextInt(256);
+    int g = random_color.nextInt(256);
+    int b = random_color.nextInt(256);
+    // If you uncomment this it may cause seizures....
+    //fill(r, g, b);
+    //rect(0, 0, 512, 512);
+
+    quadTree.party(quadTree.getRoot());
+    r = random_color.nextInt(256);
+    g = random_color.nextInt(256);
+    b = random_color.nextInt(256);
+    fill(r, g, b);
+    rect(0, 512, 620, 188);
+    displayBottomText();
+    drawButtonsParty();
+
+    stroke(10);
+    fill(50, 0, 40, 20);
+    rect(0, 0, width, height);
+    for (int i = 0; i < fs.length; i++) {
+      fs[i].draw();
+    }
+    flush();
+  }
 } //END draw
 
 /*******************************************************************************
@@ -140,7 +173,7 @@ void restart() {
  *              A single mouse click could be hitting any of the buttons.
  *******************************************************************************/
 void mousePressed() {
-  if (insertOn) {
+  if (insertOn && partyMode == false) {
     tempX = mouseX;
     tempY = mouseY;
     LineSegment pointToBeInserted = new LineSegment(tempX, tempX, tempY);
@@ -168,7 +201,7 @@ void mousePressed() {
     startTime = millis();
   }
 
-  if (reportOn && quadTreeInitialized) {
+  if (reportOn && quadTreeInitialized && !partyMode) {
     if (clicks == 2) {
       clicks = 0;
     }
@@ -196,13 +229,14 @@ void mousePressed() {
   }
 
   // user presses "Restart"
-  if (restartButton.mouseOver()) {
-    javax.swing.JOptionPane.showMessageDialog(null, "restart Button Pressed ");
-    restart();
-  } else if (readFileButton.mouseOver()) { // user presses "Read File"
+  if (partyButton.mouseOver()) {
+    partyMode = !partyMode;
+    insertOn = false;
+    reportOn = false;
+  } else if (readFileButton.mouseOver() && !partyMode) { // user presses "Read File"
     String fileName = javax.swing.JOptionPane.showInputDialog( null, "File Name", "" );
     processFile( fileName );
-  } else if (reportButton.mouseOver()) { // user presses "Report"
+  } else if (reportButton.mouseOver() && !partyMode) { // user presses "Report"
     if (reportOn == false) {
       reportOn = true;
       insertOn = false;
@@ -210,23 +244,33 @@ void mousePressed() {
     } else {
       reportOn = false;
     }
-  } else if (animationButton.mouseOver() && quadTreeInitialized) { // user presses "Animation"
+  } else if (animationButton.mouseOver() && quadTreeInitialized && !partyMode) { // user presses "Animation"
     if (animationOn == false) {
       animationOn = true;
     } else {
       animationOn = false;
     }
-  } else if (insertButton.mouseOver() && quadTreeInitialized) { // user presses "Insert"
+  } else if (insertButton.mouseOver() && quadTreeInitialized && !partyMode) { // user presses "Insert"
     if (insertOn == false) {
       insertOn = true;
       reportOn = false;
     } else {
       insertOn = false;
     }
-  } else if (partyButton.mouseOver()) {
-    partyMode = !partyMode;
   }
 } //END mousePressed
+
+void mouseReleased() {
+  if (partyMode) {
+    once = false;
+    for (int i = 0; i < fs.length; i++) {
+      if ((fs[i].hidden)&&(!once)) {
+        fs[i].launch();
+        once = true;
+      }
+    }
+  }
+}
 
 void processFile(String fileName) {
   if (fileName == null || fileName.isEmpty()) {
@@ -306,12 +350,22 @@ int parseFileForLineSegments(String filename) {
  *******************************************************************************/
 void drawButtons() {
   readFileButton.setText("Read File");
-  restartButton.drawButton();
+  partyButton.drawButton();
   readFileButton.drawButton();
   animationButton.drawButton();
   insertButton.drawButton();
   reportButton.drawButton();
-  partyButton.drawButton();
+  //  partyButton.drawButton();
+}
+
+void drawButtonsParty() {
+  readFileButton.setText("Read File");
+  partyButton.drawButtonParty();
+  readFileButton.drawButtonParty();
+  animationButton.drawButtonParty();
+  insertButton.drawButtonParty();
+  reportButton.drawButtonParty();
+  // partyButton.drawButtonParty();
 }
 
 void displayBottomText() {
@@ -343,4 +397,83 @@ void displayBottomText() {
   }
   String party = (partyMode) ? "ON" : "OFF";
   text("Party Mode = " + party, 280, 605);
+}
+
+// https://www.openprocessing.org/sketch/17259
+class Firework {
+  float x, y, oldX, oldY, ySpeed, targetX, targetY, explodeTimer, flareWeight, flareAngle;
+  int flareAmount, duration;
+  boolean launched, exploded, hidden;
+  color flare;
+  Firework() {
+    launched = false;
+    exploded = false;
+    hidden = true;
+  }
+  void draw() {
+    if ((launched)&&(!exploded)&&(!hidden)) {
+      launchMaths();
+      strokeWeight(5);
+      stroke(255);
+      line(x, y, oldX, oldY);
+    }
+    if ((!launched)&&(exploded)&&(!hidden)) {
+      explodeMaths();
+      noStroke();
+      strokeWeight(flareWeight);
+      stroke(flare);
+      for (int i = 0; i < flareAmount + 1; i++) {
+        pushMatrix();
+        translate(x, y);
+        point(sin(radians(i*flareAngle))*explodeTimer, cos(radians(i*flareAngle))*explodeTimer);
+        popMatrix();
+      }
+    }
+    if ((!launched)&&(!exploded)&&(hidden)) {
+      //do nothing
+    }
+  }
+  void launch() {
+    x = oldX = mouseX + ((random(5)*10) - 25);
+    y = oldY = height;
+    targetX = mouseX;
+    targetY = mouseY;
+    ySpeed = random(3) + 2;
+    flare = color(random(3)*50 + 105, random(3)*50 + 105, random(3)*50 + 105);
+    flareAmount = ceil(random(30)) + 20;
+    flareWeight = ceil(random(10));
+    duration = ceil(random(4))*20 + 30;
+    flareAngle = 360/flareAmount;
+    launched = true;
+    exploded = false;
+    hidden = false;
+  }
+  void launchMaths() {
+    oldX = x;
+    oldY = y;
+    if (dist(x, y, targetX, targetY) > 6) {
+      x += (targetX - x)/2;
+      y += -ySpeed;
+    } else {
+      explode();
+    }
+  }
+  void explode() {
+    explodeTimer = 0;
+    launched = false;
+    exploded = true;
+    hidden = false;
+  }
+  void explodeMaths() {
+    if (explodeTimer < duration) {
+      explodeTimer+= 0.4;
+    } else {
+      hide();
+    }
+  }
+  void hide() {
+    launched = false;
+    exploded = false;
+    hidden = true;
+  }
 }

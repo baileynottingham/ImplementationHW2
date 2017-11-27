@@ -45,6 +45,20 @@ class Button {
     fill(256, 256, 256);
   }
 
+  void drawButtonParty() {
+    java.util.Random random_color = new java.util.Random();
+    int r = random_color.nextInt(256);
+    int g = random_color.nextInt(256);
+    int b = random_color.nextInt(256);
+    fill(r,g,b);
+    stroke(0);
+    rect(x, y, w, h, 10);
+    textAlign(CENTER, CENTER);
+    fill(0);
+    text(label, x+ (w/2), y+(h/2)); //Aligns text inside button
+    fill(256, 256, 256);
+  }
+
   /*
    * mouseOver()
    *

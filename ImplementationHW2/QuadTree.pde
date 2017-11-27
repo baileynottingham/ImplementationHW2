@@ -1,4 +1,4 @@
-/* //<>//
+/* //<>// //<>//
  * Maintains a pointer to the root, and has the responsibility
  * to add line segments to its children, and query itself.
  * @author Bailey Nottingham
@@ -281,7 +281,7 @@ class QuadTree {
       java.util.List<LineSegment> segs = node.getLineSegments();
       strokeWeight(3);
       for (int i = 0; i < segs.size(); i++) {
-        if (partyMode && partyModeCounter++ % 60 == 0) {
+        if (partyMode && partyModeCounter++ % 60 == 0 && false) {
           java.util.Random random_color = new java.util.Random();
           int r = random_color.nextInt(256);
           int g = random_color.nextInt(256);
@@ -402,5 +402,51 @@ class QuadTree {
 
   public void setErrorMessages(java.util.List<String> errorMessages) {
     this.errorMessages = errorMessages;
+  }
+
+
+  public void party(Node node) {
+    if (!node.isLeaf()) {
+      drawSplitRegionParty(node);
+      flush();
+      for (Node u : node.getChildren()) {
+        party(u);
+      }
+    } else {
+      java.util.List<LineSegment> segs = node.getLineSegments();
+      strokeWeight(3);
+      for (int i = 0; i < segs.size(); i++) {
+        //   if (partyMode && partyModeCounter++ % 60 == 0) {
+        java.util.Random random_color = new java.util.Random();
+        int r = random_color.nextInt(256);
+        int g = random_color.nextInt(256);
+        int b = random_color.nextInt(256);
+        stroke(r, g, b);
+        line(segs.get(i).getLeftPoint().getX(), segs.get(i).getLeftPoint().getY(), segs.get(i).getRightPoint().getX(), segs.get(i).getRightPoint().getY());
+        //     }
+        flush();
+      }
+    }
+  }
+
+  public void drawSplitRegionParty(Node node) {
+    java.util.Random random_color = new java.util.Random();
+    int r = random_color.nextInt(256);
+    int g = random_color.nextInt(256);
+    int b = random_color.nextInt(256);
+    stroke(r, g, b);
+    strokeWeight(2);
+    // Draw upper segment of rectangle node
+    line(node.getRegion().getXMin(), node.getRegion().getYMin(), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin());
+    // Draw lower segment of rectangle
+    line(node.getRegion().getXMin(), node.getRegion().getYMin() + node.getRegion().getHeight(), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin() + node.getRegion().getHeight());
+    // Draw right segment of rectangle
+    line(node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin(), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin() + node.getRegion().getHeight());
+    // Draw left segment of rectangle
+    line(node.getRegion().getXMin(), node.getRegion().getYMin(), node.getRegion().getXMin(), node.getRegion().getYMin() + node.getRegion().getHeight());
+    // Draw vertical segment down the middle
+    line(node.getRegion().getXMin() + (node.getRegion().getWidth() / 2), node.getRegion().getYMin(), node.getRegion().getXMin() + (node.getRegion().getWidth() / 2), node.getRegion().getYMin() + node.getRegion().getHeight());
+    // Draw horizontal segment
+    line(node.getRegion().getXMin(), node.getRegion().getYMin() + (node.getRegion().getHeight() / 2), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin() + (node.getRegion().getHeight() / 2));
   }
 }

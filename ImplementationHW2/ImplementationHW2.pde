@@ -1,4 +1,4 @@
-//<>// //<>// //<>//
+ //<>// //<>//
 //Buttons
 Button readFileButton;
 Button partyButton;
@@ -35,6 +35,9 @@ boolean once;
 
 private static final int FILE_ERROR = -1;
 
+/**
+ * Sets up the canvas, and the buttons.
+ */
 void setup() {
   size(512, 630);
   smooth();
@@ -55,6 +58,9 @@ void setup() {
   }
 } //END setup
 
+/**
+ * Always create an output file when exiting the program.
+ */
 private void prepareExitHandler() {
   Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
     public void run () {
@@ -80,6 +86,10 @@ private void prepareExitHandler() {
   }
   ));
 }
+
+/**
+ * Draw all of the components necessary to display the quad tree.
+ */
 void draw() {
   clear();
   smooth();
@@ -99,17 +109,18 @@ void draw() {
   fill(250, 0, 0);
 
   double currentTime= millis();
+
   if (quadTreeInitialized && (currentTime-startTime) > highlightTime || animationOn == false) {
-    quadTree.displayQuadTree(quadTree.getRoot(), partyMode);
+    quadTree.displayQuadTree(quadTree.getRoot());
   }
 
   if (quadTreeInitialized && animationOn && justInserted && (currentTime-startTime) <= highlightTime) {
-    quadTree.displayQuadTree(quadTree.getRoot(), partyMode);
+    quadTree.displayQuadTree(quadTree.getRoot());
     quadTree.animateInsert(tempX, tempY, quadTree.getRoot());
   }
 
   if (quadTreeInitialized && animationOn && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime && !partyMode) {
-    quadTree.displayQuadTree(quadTree.getRoot(), partyMode);
+    quadTree.displayQuadTree(quadTree.getRoot());
     Rectangle rectReport = new Rectangle(topLeftX, bottomRightX, topLeftY, bottomRightY);
     quadTree.report(rectReport);
     quadTree.animateReport(quadTree.getRoot());
@@ -117,7 +128,7 @@ void draw() {
   }
 
   if (quadTreeInitialized && animationOn == false && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime && !partyMode) {
-    quadTree.displayQuadTree(quadTree.getRoot(), partyMode);
+    quadTree.displayQuadTree(quadTree.getRoot());
     Rectangle rectReport = new Rectangle(topLeftX, bottomRightX, topLeftY, bottomRightY);
     quadTree.report(rectReport);
     quadTree.animateReportNoAnimation(quadTree.getRoot());
@@ -155,6 +166,7 @@ void draw() {
     flush();
   }
 } //END draw
+
 
 /*******************************************************************************
  * restart()
@@ -219,6 +231,15 @@ void mousePressed() {
     if (clicks == 1) {
       bottomRightX = mouseX;
       bottomRightY = mouseY;
+
+      boolean isToLeft = topLeftX < bottomRightX;
+      boolean isToBottom = topLeftY < bottomRightY;
+
+      if (!isToLeft || !isToBottom) {
+        javax.swing.JOptionPane.showMessageDialog(null, "Invalid bottom right selection. Please ensure your click is to the bottom right.");
+        return;
+      }
+
       if (quadTree.getRoot().getRegion().containsPoint(bottomRightX, bottomRightY)) {
         startTime= millis();
       } else {
@@ -260,6 +281,9 @@ void mousePressed() {
   }
 } //END mousePressed
 
+/**
+ * launch a fire work if we click on the canvas.
+ */
 void mouseReleased() {
   if (partyMode) {
     once = false;
@@ -272,6 +296,9 @@ void mouseReleased() {
   }
 }
 
+/**
+ * Process the file, and construct the Quad-Tree.
+ */
 void processFile(String fileName) {
   if (fileName == null || fileName.isEmpty()) {
     return;
@@ -299,6 +326,9 @@ void processFile(String fileName) {
   quadTree.setErrorMessages(errorMessages);
 }
 
+/**
+ * Grab the height of the Quad-Tree from the file.
+ */
 int parseFileForHeight(String filename) {
   BufferedReader reader = createReader(filename);
   try {
@@ -311,6 +341,9 @@ int parseFileForHeight(String filename) {
   }
 }
 
+/**
+ * Go through the input file and read in the line segments.
+ */
 int parseFileForLineSegments(String filename) {
   BufferedReader reader;
   String line = null;
@@ -358,6 +391,9 @@ void drawButtons() {
   //  partyButton.drawButton();
 }
 
+/**
+ * Draw the buttons in party mode.
+ */
 void drawButtonsParty() {
   readFileButton.setText("Read File");
   partyButton.drawButtonParty();
@@ -368,6 +404,9 @@ void drawButtonsParty() {
   // partyButton.drawButtonParty();
 }
 
+/**
+ * Draws the status of the program.
+ */
 void displayBottomText() {
   fill(0);
   text("Animation Mode = ", 10, 565, width, height);
@@ -399,26 +438,38 @@ void displayBottomText() {
   text("Party Mode = " + party, 280, 605);
 }
 
-// https://www.openprocessing.org/sketch/17259
+/**
+ * Creates a firework object for the party mode.
+ * @author Bailey Nottingham
+ * @author Mairo Hernandez
+ * Credit: https://www.openprocessing.org/sketch/17259
+ */
 class Firework {
   float x, y, oldX, oldY, ySpeed, targetX, targetY, explodeTimer, flareWeight, flareAngle;
   int flareAmount, duration;
   boolean launched, exploded, hidden;
   color flare;
+
+  /**
+   * Initalizes the firework object.
+   */
   Firework() {
     launched = false;
     exploded = false;
     hidden = true;
   }
+  /**
+   * Implements the logic to draw the firework.
+   */
   void draw() {
-    if ((launched)&&(!exploded)&&(!hidden)) {
-      launchMaths();
+    if (launched && !exploded && !hidden) {
+      launchMath();
       strokeWeight(5);
       stroke(255);
       line(x, y, oldX, oldY);
     }
-    if ((!launched)&&(exploded)&&(!hidden)) {
-      explodeMaths();
+    if (!launched && exploded && !hidden) {
+      explodeMath();
       noStroke();
       strokeWeight(flareWeight);
       stroke(flare);
@@ -428,9 +479,6 @@ class Firework {
         point(sin(radians(i*flareAngle))*explodeTimer, cos(radians(i*flareAngle))*explodeTimer);
         popMatrix();
       }
-    }
-    if ((!launched)&&(!exploded)&&(hidden)) {
-      //do nothing
     }
   }
   void launch() {
@@ -448,7 +496,11 @@ class Firework {
     exploded = false;
     hidden = false;
   }
-  void launchMaths() {
+
+  /**
+   * Compute the calculations necessary for launching.
+   */
+  void launchMath() {
     oldX = x;
     oldY = y;
     if (dist(x, y, targetX, targetY) > 6) {
@@ -458,19 +510,31 @@ class Firework {
       explode();
     }
   }
+
+  /**
+   * Explode the firework.
+   */
   void explode() {
     explodeTimer = 0;
     launched = false;
     exploded = true;
     hidden = false;
   }
-  void explodeMaths() {
+
+  /**
+   * The calculations to explode.
+   */
+  void explodeMath() {
     if (explodeTimer < duration) {
       explodeTimer+= 0.4;
     } else {
       hide();
     }
   }
+
+  /**
+   * Hide the firework.
+   */
   void hide() {
     launched = false;
     exploded = false;

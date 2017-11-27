@@ -7,9 +7,13 @@
  *-------------------------------------------------------------------------------------------*/
 
 class Point {
-  int x;
-  int y;
 
+  private int x;
+  private int y;
+
+  /**
+   * Constructs a point that is represented by the x and y value.
+   */
   Point(int x, int y) {
     this.x = x;
     this.y = y;
@@ -63,6 +67,9 @@ class Point {
     return false;
   }
 
+  /**
+   * Returns the string version of the object.
+   */
   String toString() {
     return "(" + x +", " + y + ")";
   }

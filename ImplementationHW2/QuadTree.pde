@@ -126,12 +126,10 @@ class QuadTree {
     if (v == null) {
       return;
     }
-
     // 2.If R(v) is disjoint from Q – return
     if (v.getRegion().isDisjoint(queryDisk)) {
       return;
     }
-
     // 3.If R(v) is fully contained in Q –
     // report all points in the subtree
     // rooted at v.
@@ -139,11 +137,9 @@ class QuadTree {
       v.markReported();
       changeLineSegments(v);
     }
-
     if (v.getRegion().containsRect(queryDisk) || !(v.getRegion().isDisjoint(queryDisk))) {
       v.markReported();
     }
-
     // 4.If v is a leaf – check each point
     // in R(v) if inside Q
     if (v.isLeaf()) {
@@ -160,26 +156,44 @@ class QuadTree {
     return;
   }
 
+  /**
+   * Get the root of the tree.
+   */
   public Node getRoot() {
     return root;
   }
 
+  /**
+   * Set the root of the tree.
+   */
   public void setRoot(Node root) {
     this.root = root;
   }
 
+  /**
+   * get the height of the tree.
+   */
   public int getHeight() {
     return height;
   }
 
+  /**
+   * Set the height of the tree.
+  */
   public void setHeight(int height) {
     this.height = height;
   }
 
+  /**
+   * traverse the tree.
+   */
   public void traverseTree() {
     traverseHelper(root);
   }
 
+  /**
+   * Recursivley traverse the tree.
+   */
   public void traverseHelper(Node node) {
     println("Node reported? = " + node.reported);
     if (!node.isLeaf()) {
@@ -196,6 +210,7 @@ class QuadTree {
     }
     return;
   }
+
   /**
    * Animation helper method.
    * Will traverse through all of the nodes and 'unmark' the nodes.
@@ -214,6 +229,7 @@ class QuadTree {
     }
     return;
   }
+
   /**
    * Animation helper method.
    * Will mark the line segment as reported.
@@ -221,6 +237,7 @@ class QuadTree {
   private void changeLineSegment(LineSegment lineSegment) {
     lineSegment.markReported();
   }
+
   /**
    * Animation helper method.
    * Will traverse through all of the line segments in this node's region
@@ -237,6 +254,9 @@ class QuadTree {
     }
   }
 
+  /**
+   * Get the number of nodes in the tree.
+   */
   int getNumberOfNodes() {
     numberOfNodes = 0;
     travsereTreeGetNumberOfNodes(root);
@@ -245,6 +265,9 @@ class QuadTree {
     return temp;
   }
 
+  /**
+   * Traverse the tree to get the number of nodes.
+   */
   void travsereTreeGetNumberOfNodes(Node node) {
     if (!node.isLeaf()) {
       numberOfNodes++;
@@ -256,10 +279,16 @@ class QuadTree {
     }
   }
 
+  /**
+   * Get the number of lines stored in the tree.
+   */
   int getNumberOfSegments() {
     return numberOfSegments;
   }
 
+  /**
+   * Traverse the tree to get the number of lines.
+   */
   void travsereTreeGetNumberOfSegments(Node node) {
     if (!node.isLeaf()) {
       for (Node u : node.getChildren()) {
@@ -270,32 +299,30 @@ class QuadTree {
     }
   }
 
-  public void displayQuadTree(Node node, boolean partyMode) {
+  /**
+   * Display the quad tree.
+   */
+  public void displayQuadTree(Node node) {
     if (!node.isLeaf()) {
       drawSplitRegion(node);
       flush();
       for (Node u : node.getChildren()) {
-        displayQuadTree(u, partyMode);
+        displayQuadTree(u);
       }
     } else {
       java.util.List<LineSegment> segs = node.getLineSegments();
       strokeWeight(3);
       for (int i = 0; i < segs.size(); i++) {
-        if (partyMode && partyModeCounter++ % 60 == 0 && false) {
-          java.util.Random random_color = new java.util.Random();
-          int r = random_color.nextInt(256);
-          int g = random_color.nextInt(256);
-          int b = random_color.nextInt(256);
-          stroke(r, g, b);
-        } else {
           stroke(51, 51, 255);
-        }
         line(segs.get(i).getLeftPoint().getX(), segs.get(i).getLeftPoint().getY(), segs.get(i).getRightPoint().getX(), segs.get(i).getRightPoint().getY());
       }
       flush();
     }
   }
 
+  /**
+   * Draw the split region.
+   */
   public void drawSplitRegion(Node node) {
     stroke(0);
     strokeWeight(2);
@@ -313,6 +340,9 @@ class QuadTree {
     line(node.getRegion().getXMin(), node.getRegion().getYMin() + (node.getRegion().getHeight() / 2), node.getRegion().getXMin() + node.getRegion().getWidth(), node.getRegion().getYMin() + (node.getRegion().getHeight() / 2));
   }
 
+  /**
+   * Draw the reported region.
+   */
   public void drawSplitRegionReport(Node node) {
     stroke(255, 0, 0);
     strokeWeight(5);
@@ -326,6 +356,9 @@ class QuadTree {
     line(node.getRegion().getXMin(), node.getRegion().getYMin(), node.getRegion().getXMin(), node.getRegion().getYMin() + node.getRegion().getHeight());
   }
 
+  /**
+   * Draw the split region that was reported.
+   */
   public void drawSplitRegionReport(Rectangle rect) {
     stroke(0, 255, 0);
     strokeWeight(5);
@@ -339,6 +372,9 @@ class QuadTree {
     line(rect.getXMin(), rect.getYMin(), rect.getXMin(), rect.getYMin() + rect.getHeight());
   }
 
+  /**
+   * Animate the insertion of the point.
+   */
   public void animateInsert(int x, int y, Node node) {
     if (!node.isLeaf() && node.getRegion().containsPoint(x, y)) {
       drawSplitRegionReport(node);
@@ -353,6 +389,9 @@ class QuadTree {
     return;
   }
 
+  /**
+   * Animate the report.
+   */
   public void animateReport(Node node) {
     if (!node.isLeaf()) {
       if (node.reported) {
@@ -376,10 +415,12 @@ class QuadTree {
         }
       }
     }
-
     return;
   }
 
+  /**
+   * Animate the report without animating.
+   */
   public void animateReportNoAnimation(Node node) {
     if (!node.isLeaf()) {
       for (Node u : node.getChildren()) {
@@ -400,11 +441,16 @@ class QuadTree {
     return;
   }
 
+  /**
+   * Set the error message list.
+   */
   public void setErrorMessages(java.util.List<String> errorMessages) {
     this.errorMessages = errorMessages;
   }
 
-
+  /**
+   * Set the party mode drawing.
+   */
   public void party(Node node) {
     if (!node.isLeaf()) {
       drawSplitRegionParty(node);
@@ -429,6 +475,9 @@ class QuadTree {
     }
   }
 
+  /**
+   * Draw the split region in party mode.
+   */
   public void drawSplitRegionParty(Node node) {
     java.util.Random random_color = new java.util.Random();
     int r = random_color.nextInt(256);

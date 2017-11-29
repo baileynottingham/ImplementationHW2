@@ -36,7 +36,7 @@ class Button {
    * Makes button on window
    */
   void drawButton() {
-    fill(218);
+    fill(0, 203, 185);
     stroke(0);
     rect(x, y, w, h, 10);
     textAlign(CENTER, CENTER);

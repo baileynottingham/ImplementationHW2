@@ -11,8 +11,6 @@ class QuadTree {
   private int numberOfNodes = 0;
   private int numberOfSegments = 0;
   private java.util.Set<LineSegment> segments = new java.util.HashSet<LineSegment>();
-  private int partyModeCounter = 0;
-  private java.util.List<String> errorMessages = new java.util.ArrayList<String>();
 
   /**
    * Sets up an empty Quad Tree with a given height as a parameter.
@@ -51,7 +49,6 @@ class QuadTree {
   public void insert(LineSegment lineSegment, Node v) {
     if (v == null) {
       System.err.println("QuadTree[ insert ] v is null. This shouldn't happen.");
-      errorMessages.add("QuadTree[ insert ] v is null. This shouldn't happen.");
       return;
     }
     if ((v.getRegion().isDisjoint(lineSegment))) {
@@ -439,13 +436,6 @@ class QuadTree {
       }
     }
     return;
-  }
-
-  /**
-   * Set the error message list.
-   */
-  public void setErrorMessages(java.util.List<String> errorMessages) {
-    this.errorMessages = errorMessages;
   }
 
   /**

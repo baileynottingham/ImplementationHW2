@@ -7,7 +7,6 @@ Button reportButton;
 
 QuadTree quadTree = null;
 java.util.List<LineSegment> lineSegments = new java.util.ArrayList<LineSegment>();
-java.util.List<String> errorMessages = new java.util.ArrayList<String>();
 private String fileName;
 
 boolean quadTreeInitialized = false;
@@ -48,8 +47,6 @@ void setup() {
   animationButton = new Button("Animation", 210, 520, 90, 35);
   insertButton = new Button("Insert", 320, 520, 80, 35);
   reportButton = new Button("Report", 420, 520, 80, 35);
-  //  partyButton = new Button("Party", 520, 520, 80, 35);
-  prepareExitHandler();
 
   smooth();
   for (int i = 0; i < fs.length; i++) {
@@ -57,34 +54,6 @@ void setup() {
   }
 } //END setup
 
-/**
- * Always create an output file when exiting the program.
- */
-private void prepareExitHandler() {
-  Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-    public void run () {
-      if (fileName == null) {
-        return;
-      }
-      String fileNames[] = fileName.split( ".in" );
-      String outputFile = fileNames[ 0 ] + ".out";
-      PrintWriter output = createWriter( outputFile );
-      output.println("======================================= Line Segments Report =======================================");
-      for (LineSegment line : quadTree.getLineSegments()) {
-        output.println(line);
-      }
-      output.println("======================================= Line Segments Report =======================================");
-      output.println("=========================================== Error Report ===========================================");
-      for (String errMsg : errorMessages) {
-        output.println(errMsg);
-      }
-      output.println("=========================================== Error Report ===========================================");
-      output.flush();
-      output.close();
-    }
-  }
-  ));
-}
 
 /**
  * Draw all of the components necessary to display the quad tree.
@@ -97,9 +66,8 @@ void draw() {
   fill(256, 256, 256);
   rect(0, 0, 620, 512);
 
-  fill(102, 255, 178);
+  fill(0, 147, 239);
   rect(0, 512, 620, 188);
-  fill(256, 256, 256);
   drawButtons();
   fill(256, 256, 256);
   textAlign(LEFT, TOP);
@@ -195,13 +163,11 @@ void mousePressed() {
           tempY >= (line.getVerticalShift() - 2) &&
           tempY <= (line.getVerticalShift() + 2)) {
           System.err.println("[ERR] two points are on each other.");
-          errorMessages.add("[ERR] two points are on each other.");
           return;
         }
       } else {
         if (pointToBeInserted.isIntersecting(line)) {
           System.err.println("[ERR] line: " + line + "\t" + "intersects with: " + pointToBeInserted + "(pointToBeInserted)");
-          errorMessages.add("[ERR] line: " + line + "\t" + "intersects with: " + pointToBeInserted + "(pointToBeInserted)");
           return;
         }
       }
@@ -307,7 +273,6 @@ void processFile(String fileName) {
 
   if (height == FILE_ERROR) {
     System.err.println("[ERR] error reading file.");
-    errorMessages.add("[ERR] error reading file.");
     return;
   }
 
@@ -315,14 +280,12 @@ void processFile(String fileName) {
   int rtnCode = parseFileForLineSegments(this.fileName);
   if (rtnCode == FILE_ERROR) {
     System.err.println("[ERR] error reading file.");
-    errorMessages.add("[ERR] error reading file.");
     return;
   }
   for (LineSegment lineSegment : lineSegments) {
     quadTree.insert(lineSegment);
   }
   quadTreeInitialized = true;
-  quadTree.setErrorMessages(errorMessages);
 }
 
 /**
@@ -357,7 +320,6 @@ int parseFileForLineSegments(String filename) {
       String[] ints = line.split(",");
       if (ints.length != 3) {
         System.err.println("Excpeted 3 integers.");
-        errorMessages.add("Excpeted 3 integers.");
         continue;
       }
       int x1 = Integer.parseInt(ints[0].trim());
@@ -369,7 +331,6 @@ int parseFileForLineSegments(String filename) {
   } 
   catch (Exception e) {
     System.err.println("Error occured when parsing " + filename + ". Error msg: " + e.getMessage());
-    errorMessages.add("Error occured when parsing " + filename + ". Error msg: " + e.getMessage());
     return FILE_ERROR;
   }
   return 1;

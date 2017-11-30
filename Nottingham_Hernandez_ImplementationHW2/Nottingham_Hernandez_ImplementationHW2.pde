@@ -234,8 +234,12 @@ void mousePressed() {
     insertOn = false;
     reportOn = false;
   } else if (readFileButton.mouseOver() && !partyMode) { // user presses "Read File"
-    String fileName = javax.swing.JOptionPane.showInputDialog( null, "File Name", "" );
-    processFile( fileName );
+    if (quadTreeInitialized) {
+      javax.swing.JOptionPane.showMessageDialog(null, "A file has already been read. Please terminate and restart the program if you would like to read in a new file.");
+    } else {
+      String fileName = javax.swing.JOptionPane.showInputDialog( null, "File Name", "" );
+      processFile( fileName );
+    }
   } else if (reportButton.mouseOver() && !partyMode) { // user presses "Report"
     if (reportOn == false) {
       reportOn = true;

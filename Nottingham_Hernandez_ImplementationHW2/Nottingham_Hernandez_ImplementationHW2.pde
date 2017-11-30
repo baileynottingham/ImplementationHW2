@@ -92,6 +92,9 @@ void draw() {
     quadTree.animateReport(quadTree.getRoot());
     quadTree.drawSplitRegionReport(rectReport);
   }
+  if (quadTreeInitialized && animationOn && reportOn && clicks != 2 && (currentTime-startTime) <= highlightTime && !partyMode) {
+    quadTree.displayQuadTree(quadTree.getRoot());
+  }
 
   if (quadTreeInitialized && animationOn == false && reportOn && clicks == 2 && (currentTime-startTime) <= highlightTime && !partyMode) {
     quadTree.displayQuadTree(quadTree.getRoot());
@@ -104,6 +107,18 @@ void draw() {
   if ((currentTime-startTime) > highlightTime) {
     justInserted = false;
   }
+
+  // Redraw the lower portion of GUI in case an h > 9 and the segments and split points appear over our buttons
+  stroke(0, 0, 0);
+  strokeWeight(1);
+  fill(256, 256, 256);
+  fill(0, 147, 239);
+  rect(0, 512, 620, 188);
+  drawButtons();
+  fill(256, 256, 256);
+  textAlign(LEFT, TOP);
+  displayBottomText();
+  fill(250, 0, 0);
 
   if (quadTreeInitialized && partyMode) {
     java.util.Random random_color = new java.util.Random();
@@ -131,16 +146,6 @@ void draw() {
     }
     flush();
   }
-  stroke(0, 0, 0);
-  strokeWeight(1);
-  fill(256, 256, 256);
-  fill(0, 147, 239);
-  rect(0, 512, 620, 188);
-  drawButtons();
-  fill(256, 256, 256);
-  textAlign(LEFT, TOP);
-  displayBottomText();
-  fill(250, 0, 0);
 } //END draw
 
 

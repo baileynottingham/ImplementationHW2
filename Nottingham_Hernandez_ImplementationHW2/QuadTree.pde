@@ -11,10 +11,7 @@ class QuadTree {
   private int numberOfNodes = 0;
   private int numberOfSegments = 0;
   private java.util.Set<LineSegment> segments = new java.util.HashSet<LineSegment>();
-<<<<<<< Updated upstream
-=======
   private java.util.List<String> errorMessages = new java.util.ArrayList<String>();
->>>>>>> Stashed changes
 
   /**
    * Sets up an empty Quad Tree with a given height as a parameter.

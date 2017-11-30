@@ -71,7 +71,6 @@ void draw() {
   drawButtons();
   fill(256, 256, 256);
   textAlign(LEFT, TOP);
-  text("Type Filename: " + "sample text goes here", 10, 410, width, height);
   displayBottomText();
   fill(250, 0, 0);
 
@@ -132,6 +131,16 @@ void draw() {
     }
     flush();
   }
+  stroke(0, 0, 0);
+  strokeWeight(1);
+  fill(256, 256, 256);
+  fill(0, 147, 239);
+  rect(0, 512, 620, 188);
+  drawButtons();
+  fill(256, 256, 256);
+  textAlign(LEFT, TOP);
+  displayBottomText();
+  fill(250, 0, 0);
 } //END draw
 
 

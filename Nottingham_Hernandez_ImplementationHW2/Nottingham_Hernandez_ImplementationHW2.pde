@@ -167,7 +167,7 @@ void mousePressed() {
         }
       } else {
         if (pointToBeInserted.isIntersecting(line)) {
-          System.err.println("[ERR] line: " + line + "\t" + "intersects with: " + pointToBeInserted + "(pointToBeInserted)");
+          System.err.println("[ERR] a line and the point you want to insert intersect each other.");
           return;
         }
       }

@@ -156,6 +156,23 @@ void draw() {
  *              program without stopping the entire thing.
  *******************************************************************************/
 void restart() {
+  quadTree = null;
+  lineSegments.clear();
+  animationOn = true;
+  insertOn = false;
+  reportOn = false;
+  partyMode = false;
+  tempX = 0;
+  tempY = 0;
+  topLeftX = 0;
+  topLeftY = 0;
+  bottomRightX = 0;
+  bottomRightY = 0;
+  clicks = 0;
+  justInserted = false;
+  highlightTime=3000;
+  startTime = 0;
+  startTimeParty = 0;
 } //END restart
 
 
@@ -234,12 +251,12 @@ void mousePressed() {
     insertOn = false;
     reportOn = false;
   } else if (readFileButton.mouseOver() && !partyMode) { // user presses "Read File"
-    if (quadTreeInitialized) {
-      javax.swing.JOptionPane.showMessageDialog(null, "A file has already been read. Please terminate and restart the program if you would like to read in a new file.");
-    } else {
-      String fileName = javax.swing.JOptionPane.showInputDialog( null, "File Name", "" );
-      processFile( fileName );
-    }
+    String fileName = javax.swing.JOptionPane.showInputDialog( null, "File Name", "" );
+    processFile( fileName );
+    //if (quadTreeInitialized) {
+    //  javax.swing.JOptionPane.showMessageDialog(null, "A file has already been read. Please terminate and restart the program if you would like to read in a new file.");
+    //} else {
+    //}
   } else if (reportButton.mouseOver() && !partyMode) { // user presses "Report"
     if (reportOn == false) {
       reportOn = true;
@@ -283,6 +300,8 @@ void mouseReleased() {
  * Process the file, and construct the Quad-Tree.
  */
 void processFile(String fileName) {
+  clear();
+  restart();
   if (fileName == null || fileName.isEmpty()) {
     return;
   }
